@@ -13,14 +13,15 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.*;
 
+import static com.sparta.Driver.LOGGER;
+
 public class FileIO {
     private static final int poolSize = 8;
     private static final HashSet<Employee> uniqueEmployees = new HashSet<>();
     private static final List<Employee> duplicatesAndCorrupted = new ArrayList<>();
-    public static final Logger LOGGER = LogManager.getLogger();
     private static final Scanner SCANNER = new Scanner(System.in);
 
-    public static void main(String[] args) {
+    public static List<Collection<Employee>> performMultithreadedRead() {
         BlockingQueue<String> queue = new ArrayBlockingQueue<>(256);
         // Thread Safe Queue to be shared amongst all threads
         Path filename = Path.of("EmployeeRecords.csv");
@@ -41,8 +42,10 @@ public class FileIO {
             e.printStackTrace();
         }
 
-        System.out.println("Number of unique records: " + uniqueEmployees.size());
-        System.out.println("Number of duplicate records: " + duplicatesAndCorrupted.size());
+        List<Collection<Employee>> collections = new ArrayList<>(2);
+        collections.add(uniqueEmployees);
+        collections.add(duplicatesAndCorrupted);
+        return collections;
 
     }
 
@@ -117,9 +120,9 @@ class FileReaderClass implements Runnable{
                 queue.put(nextLine);
                 count++;
             }
-            FileIO.LOGGER.info("Items added to queue are: " + count);
+            LOGGER.info("Items added to queue are: " + count);
         } catch (IOException | InterruptedException e){
-            FileIO.LOGGER.warn("Exception occurred");
+            LOGGER.warn("Exception occurred");
         }
     }
 }
@@ -142,7 +145,7 @@ class EmployeeParser implements Runnable{
         } catch (NumberFormatException nfe) {
             if (idParsed) System.out.println("Error parsing salary field");
             else System.out.println("Error parsing Employee ID");
-            FileIO.LOGGER.error("Parsing failed");
+            LOGGER.error("Parsing failed");
         }
         String namePrefix = components[1];
         String firstName = EmployeeValidate.validateName(components[2]);
@@ -153,7 +156,6 @@ class EmployeeParser implements Runnable{
         java.sql.Date dateOfBirth = java.sql.Date.valueOf(DateFormatter.formatDate(components[7]));
         java.sql.Date dateOfJoining = java.sql.Date.valueOf(DateFormatter.formatDate(components[8]));
         return new Employee(id, namePrefix, firstName, initial, lastName, gender, email, dateOfBirth, dateOfJoining, salary);
-
     }
 
     @Override
