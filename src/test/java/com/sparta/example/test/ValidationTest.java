@@ -75,6 +75,5 @@ public class ValidationTest {
     public void invalidNameTest(String input) {
         String result = EmployeeValidate.validateName(input);
         assertEquals(null, result);
-
     }
 }
