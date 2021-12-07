@@ -31,7 +31,7 @@ public class EmployeeValidate {
     }
 
     public static char validateGender(char gender) {
-        // Genders are
+        // Valid genders are returned
         if (gender == 'M' || gender == 'F') {
             return gender;
         } else if (gender == 'm') {
@@ -76,7 +76,7 @@ public class EmployeeValidate {
     public static String validateNamePrefix(String title) {
         if (matches(prefixPattern, title)) {
             StringBuilder formattedTitle = new StringBuilder();
-            formattedTitle.append(title.substring(0,1).toUpperCase() + title.toLowerCase());
+            formattedTitle.append(title.substring(0,1).toUpperCase() + title.substring(1).toLowerCase());
             if (formattedTitle.charAt(formattedTitle.length() - 1) != '.') {
                 formattedTitle.append(".");
             }
