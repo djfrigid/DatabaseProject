@@ -4,14 +4,20 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class EmployeeValidate {
-    private static String emailRegex = "^[a-zA-Z0-9_!#$%&’*+=?`{|}~^.-]+@[a-zA-Z0-9]+[.]{1}[a-zA-Z0-9]{2,3}(?:[.][a-zA-Z0-9]{2,3})?$";
+    private static String emailRegex = "^[a-zA-Z0-9_!#$%&’*+=?`{|}~^.-]+@[a-zA-Z0-9]+[.][a-zA-Z0-9]{2,3}(?:[.][a-zA-Z0-9]{2,3})?$";
     private static String nameRegex = "^[A-Za-z]{2,}(?:-[A-Za-z]{2,})?$";
+    private static String prefixRegex = "^[A-Za-z]{3,4}[.]$";
     private static Pattern emailPattern = Pattern.compile(emailRegex);
     private static Pattern namePattern = Pattern.compile(nameRegex);
+    private static Pattern prefixPattern = Pattern.compile(prefixRegex);
+
+    private static boolean matches(Pattern pattern, String employeeDetail) {
+        Matcher matcher = pattern.matcher(employeeDetail);
+        return matcher.matches();
+    }
 
     public static String validateEmail(String email) {
-        Matcher matcher = emailPattern.matcher(email);
-        if (matcher.matches()) {
+        if (matches(emailPattern, email)) {
             return email;
         }
         return null;
@@ -25,7 +31,6 @@ public class EmployeeValidate {
         } else if (gender == 'f') {
             return 'F';
         }
-
         return '\0';
     }
 
@@ -38,9 +43,8 @@ public class EmployeeValidate {
     }
 
     public static String validateName(String name) {
-        Matcher matcher = namePattern.matcher(name);
         // Check name is in correct format
-        if (matcher.matches()) {
+        if (matches(namePattern, name)) {
             // Ensure correct capitalisation is returned
             StringBuilder formattedName = new StringBuilder();
             if (name.contains("-")) {
@@ -57,6 +61,13 @@ public class EmployeeValidate {
                 formattedName.append(name.substring(0,1).toUpperCase() + name.substring(1).toLowerCase());
             }
             return formattedName.toString();
+        }
+        return null;
+    }
+
+    public static String validateNamePrefix(String title) {
+        if (matches(prefixPattern, title)) {
+            return title.substring(0,1).toUpperCase() + title.toLowerCase();
         }
         return null;
     }
