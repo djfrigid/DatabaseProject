@@ -4,19 +4,26 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class EmployeeValidate {
-    private static String emailRegex = "^[a-zA-Z0-9_!#$%&’*+=?`{|}~^.-]+@[a-zA-Z0-9]+[.][a-zA-Z0-9]{2,3}(?:[.][a-zA-Z0-9]{2,3})?$";
+    private static String emailRegex = "^[a-zA-Z0-9_!#$%&’*+=?`{|}~^.-]+@" +
+            "[a-zA-Z0-9]+[.][a-zA-Z0-9]{2,3}(?:[.][a-zA-Z0-9]{2,3})?$";
     private static String nameRegex = "^[A-Za-z]{2,}(?:-[A-Za-z]{2,})?$";
-    private static String prefixRegex = "^[A-Za-z]{3,4}[.]$";
+    private static String prefixRegex = "^[A-Za-z]{2,4}[.]?$";
+    private static String idRegex = "^[0-9]{6}";
+    private static String salaryRegex = "[0-9]{4,8}";
     private static Pattern emailPattern = Pattern.compile(emailRegex);
     private static Pattern namePattern = Pattern.compile(nameRegex);
     private static Pattern prefixPattern = Pattern.compile(prefixRegex);
+    private static Pattern idPattern = Pattern.compile(idRegex);
+    private static Pattern salaryPattern = Pattern.compile(salaryRegex);
 
+    // Method to check string satisfies regular expression
     private static boolean matches(Pattern pattern, String employeeDetail) {
         Matcher matcher = pattern.matcher(employeeDetail);
         return matcher.matches();
     }
 
     public static String validateEmail(String email) {
+        // Only valid emails are returned
         if (matches(emailPattern, email)) {
             return email;
         }
@@ -24,6 +31,7 @@ public class EmployeeValidate {
     }
 
     public static char validateGender(char gender) {
+        // Genders are
         if (gender == 'M' || gender == 'F') {
             return gender;
         } else if (gender == 'm') {
@@ -67,7 +75,26 @@ public class EmployeeValidate {
 
     public static String validateNamePrefix(String title) {
         if (matches(prefixPattern, title)) {
-            return title.substring(0,1).toUpperCase() + title.toLowerCase();
+            StringBuilder formattedTitle = new StringBuilder();
+            formattedTitle.append(title.substring(0,1).toUpperCase() + title.toLowerCase());
+            if (formattedTitle.charAt(formattedTitle.length() - 1) != '.') {
+                formattedTitle.append(".");
+            }
+            return formattedTitle.toString();
+        }
+        return null;
+    }
+
+    public static String validateId(String idNumber) {
+        if (matches(idPattern, idNumber)) {
+            return idNumber;
+        }
+        return null;
+    }
+
+    public static String validateSalary(String salary) {
+        if (matches(salaryPattern, salary)) {
+            return salary;
         }
         return null;
     }
