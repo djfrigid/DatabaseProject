@@ -50,7 +50,7 @@ public class ValidationTest {
 
     //Emails
     @ParameterizedTest
-    @ValueSource(strings = {"hellohello@gmail.com", "spartaglobal@spartaglobal.com"})
+    @ValueSource(strings = {"hellohello@gmail.com", "spartaglobal@spartaglobal.net", "george@facebook.co.in", "marklikestocode@canada.ca"})
     @DisplayName("returns the email if the email is valid.")
     public void validEmailTest(String input) {
         String result = EmployeeValidate.validateEmail(input);
@@ -58,7 +58,7 @@ public class ValidationTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"hellohello", "spartaglobal@spartaglobal"})
+    @ValueSource(strings = {"hellohello", "spartaglobal@spartaglobal", "gmail.com"})
     @DisplayName("returns null if the email is invalid.")
     public void invalidEmailTest(String input) {
         String result = EmployeeValidate.validateEmail(input);
@@ -67,7 +67,7 @@ public class ValidationTest {
 
     //Names
     @ParameterizedTest
-    @CsvSource({"Talal, Talal", "George-Jenkins, George-Jennkins", "tALAL, Talal", "gEoRgE, George", "kOnrAd-jEnkIns, Konrad-Jenkins"})
+    @CsvSource({"Talal, Talal", "George-Jenkins, George-Jenkins", "tALAL, Talal", "gEoRgE, George", "kOnrAd-jEnkIns, Konrad-Jenkins"})
     @DisplayName("returns the name if the name is valid.")
     public void validNameTest(String input, String expectedOutput) {
         String result = EmployeeValidate.validateName(input);
