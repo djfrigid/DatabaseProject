@@ -3,6 +3,7 @@ package com.sparta.example.test;
 import com.sparta.validate.EmployeeValidate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -27,6 +28,7 @@ public class ValidationTest {
         char result = EmployeeValidate.validateGender(input);
         assertEquals(expectedOutput, result);
     }
+
     //Initials
     @ParameterizedTest
     @ValueSource(chars = {'A', 'B', 'C', 'D', 'f', 'g', 'h', 'e', 'f'})
@@ -36,6 +38,7 @@ public class ValidationTest {
         char result = EmployeeValidate.validateInitial(input);
         assertEquals(expectedResult, result);
     }
+
     @ParameterizedTest
     @ValueSource(chars = {'0', '-', '!', '?'})
     @DisplayName("returns null terminator value if the initial is invalid.")
@@ -44,6 +47,7 @@ public class ValidationTest {
         char result = EmployeeValidate.validateInitial(input);
         assertEquals(expectedOutput, result);
     }
+
     //Emails
     @ParameterizedTest
     @ValueSource(strings = {"hellohello@gmail.com", "spartaglobal@spartaglobal.com"})
@@ -60,21 +64,21 @@ public class ValidationTest {
         String result = EmployeeValidate.validateEmail(input);
         assertNull(result);
     }
+
     //Names
     @ParameterizedTest
-    @ValueSource(strings = {"Talal", "George", "Ria", "Mark", "Konrad", "George-Jenkins"})
+    @CsvSource({"Talal, Talal", "George-Jenkins, George-Jennkins", "tALAL, Talal", "gEoRgE, George", "kOnrAd-jEnkIns, Konrad-Jenkins"})
     @DisplayName("returns the name if the name is valid.")
-    public void validNameTest(String input) {
+    public void validNameTest(String input, String expectedOutput) {
         String result = EmployeeValidate.validateName(input);
-        assertEquals(input, result);
+        assertEquals(expectedOutput, result);
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"Talal34", "0George?!", "-Ria", "M4rk9881", "K0nr4d", "tALAL", "gEoRgE", "Konrad-jenkins", "Mark-"})
+    @ValueSource(strings = {"Talal34", "0George?!", "-Ria", "M4rk9881", "K0nr4d", "Mark-"})
     @DisplayName("returns null if the name is invalid. (checks for case sensitive)")
     public void invalidNameTest(String input) {
         String result = EmployeeValidate.validateName(input);
         assertNull(result);
-
     }
 }
