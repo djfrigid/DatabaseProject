@@ -2,6 +2,9 @@ package com.sparta.fileIO;
 
 import com.sparta.example.Employee;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.*;
 import java.nio.file.Path;
 import java.text.ParseException;
@@ -13,11 +16,12 @@ public class FileIO {
     private static final int poolSize = 8;
     private static HashSet<Employee> uniqueEmployees = new HashSet<>();
     private static List<Employee> duplicatesAndCorrupted = new ArrayList<>();
+    public static final Logger LOGGER = LogManager.getLogger();
 
     public static void main(String[] args) {
-        Path filename = takeUserInput();
-        // Thread Safe Queue to be shared amongst all threads
         BlockingQueue<String> queue = new ArrayBlockingQueue<>(256);
+        // Thread Safe Queue to be shared amongst all threads
+        Path filename = Path.of("EmployeeRecords.csv");
         // Thread pool of fixed size, to be used for parsing Employee lines
         ExecutorService pool = Executors.newFixedThreadPool(poolSize);
         // Create Parser threads and put them in the pool
@@ -28,17 +32,15 @@ public class FileIO {
         try {
             pool.submit(new FileReaderClass(queue, filename)).get();
             pool.shutdownNow();
-            pool.awaitTermination(1, TimeUnit.HOURS);
+            if (pool.awaitTermination(10, TimeUnit.SECONDS)){
+                LOGGER.fatal("FUCK MY LIFE");
+            };
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
 
-        Iterator<Employee> it = uniqueEmployees.iterator();
-        while(it.hasNext()){
-            System.out.println(it.next());
-        }
-
-        System.out.println("Number of records: " + uniqueEmployees.size());
+        System.out.println("Number of unique records: " + uniqueEmployees.size());
+        System.out.println("Number of duplicate records: " + duplicatesAndCorrupted.size());
 
     }
 
@@ -87,11 +89,10 @@ public class FileIO {
         return accessPath;
     }
 
-    public static void insertEmployee(Employee x){
-        if(uniqueEmployees.contains(x))
-            duplicatesAndCorrupted.add(x);
-        else
-            uniqueEmployees.add(x);
+    public static synchronized void insertEmployee(Employee x){
+        if (uniqueEmployees.contains(x))
+            duplicatesAndCorrupted.add((x));
+        else uniqueEmployees.add(x);
     }
 
 }
@@ -110,11 +111,14 @@ class FileReaderClass implements Runnable{
         try (BufferedReader reader = new BufferedReader(new FileReader(String.valueOf(inputFilename)))){
             String nextLine;
             reader.readLine(); // Read first line
+            int count = 0;
             while((nextLine = reader.readLine()) != null){
                 queue.put(nextLine);
+                count++;
             }
+            FileIO.LOGGER.info("Items added to queue are: " + count);
         } catch (IOException | InterruptedException e){
-            e.printStackTrace();
+            FileIO.LOGGER.fatal("Exception occurred");
         }
     }
 }
@@ -127,7 +131,7 @@ class EmployeeParser implements Runnable{
         this.queue = queue;
     }
 
-    private static Employee parseData(String[] components) {
+    public static synchronized Employee parseData(String[] components) {
         int id = Integer.MIN_VALUE;
         int salary = Integer.MIN_VALUE;
         boolean idParsed = false;
@@ -138,6 +142,7 @@ class EmployeeParser implements Runnable{
         } catch (NumberFormatException nfe) {
             if (idParsed) System.out.println("Error parsing salary field");
             else System.out.println("Error parsing Employee ID");
+            FileIO.LOGGER.fatal("Fuck");
         }
         String namePrefix = components[1];
         String firstName = components[2];
@@ -149,7 +154,6 @@ class EmployeeParser implements Runnable{
         java.sql.Date dateOfBirth = java.sql.Date.valueOf(DateFormatter.formatDate(components[7]));
         java.sql.Date dateOfJoining = java.sql.Date.valueOf(DateFormatter.formatDate(components[8]));
         Employee e = new Employee(id, namePrefix, firstName, initial, lastName, gender, email, dateOfBirth, dateOfJoining, salary);
-        FileIO.insertEmployee(e);
         return e;
 
     }
@@ -164,21 +168,22 @@ class EmployeeParser implements Runnable{
             try{
                 line = queue.take();
                 newEmployee = parseData(line.split(","));
+                FileIO.insertEmployee(newEmployee);
             } catch (InterruptedException e) {
                 break;
             }
         }
         while ((line = queue.poll()) != null){
             newEmployee = parseData(line.split(","));
+            FileIO.insertEmployee(newEmployee);
         }
     }
 }
 
-
 class DateFormatter {
 
-    private static final SimpleDateFormat inSDF = new SimpleDateFormat("mm/dd/yyyy");
-    private static final SimpleDateFormat outSDF = new SimpleDateFormat("yyyy-mm-dd");
+    private static final SimpleDateFormat inSDF = new SimpleDateFormat("MM/dd/yyyy");
+    private static final SimpleDateFormat outSDF = new SimpleDateFormat("yyyy-MM-dd");
 
     public static String formatDate(String inDate) {
         String outDate = "";
