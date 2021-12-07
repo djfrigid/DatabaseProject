@@ -2,6 +2,9 @@ package com.sparta.fileIO;
 
 import com.sparta.example.Employee;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.*;
 import java.nio.file.Path;
 import java.text.ParseException;
@@ -13,11 +16,13 @@ public class FileIO {
     private static final int poolSize = 8;
     private static HashSet<Employee> uniqueEmployees = new HashSet<>();
     private static List<Employee> duplicatesAndCorrupted = new ArrayList<>();
+    public static final Logger LOGGER = LogManager.getLogger();
 
     public static void main(String[] args) {
-        Path filename = takeUserInput();
-        // Thread Safe Queue to be shared amongst all threads
+
         BlockingQueue<String> queue = new ArrayBlockingQueue<>(256);
+        // Thread Safe Queue to be shared amongst all threads
+        Path filename = Path.of("EmployeeRecords.csv");
         // Thread pool of fixed size, to be used for parsing Employee lines
         ExecutorService pool = Executors.newFixedThreadPool(poolSize);
         // Create Parser threads and put them in the pool
@@ -27,19 +32,33 @@ public class FileIO {
         // Try to read the file, shutting the thread when done, then block until no items left in queue
         try {
             pool.submit(new FileReaderClass(queue, filename)).get();
-            pool.shutdownNow();
-            pool.awaitTermination(1, TimeUnit.HOURS);
+            pool.awaitTermination(5, TimeUnit.SECONDS);
+            pool.awaitTermination(5, TimeUnit.SECONDS);
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
 
-        Iterator<Employee> it = uniqueEmployees.iterator();
-        while(it.hasNext()){
-            System.out.println(it.next());
+        System.out.println("Number of records: " + duplicatesAndCorrupted.size());
+
+    }
+
+    private static void test(String[] args){
+
+        ArrayList<String> arrID = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader("EmployeeRecords.csv"))){
+            String nextLine;
+            reader.readLine(); // Read first line
+            while((nextLine = reader.readLine()) != null){
+                String [] split = nextLine.split(",");
+                String id = split[0];
+
+                arrID.add(id);
+            }
+        } catch (IOException e){
+            e.printStackTrace();
         }
 
-        System.out.println("Number of records: " + uniqueEmployees.size());
-
+        System.out.println(arrID.size());
     }
 
     private static Path takeUserInput(){
@@ -88,10 +107,7 @@ public class FileIO {
     }
 
     public static void insertEmployee(Employee x){
-        if(uniqueEmployees.contains(x))
-            duplicatesAndCorrupted.add(x);
-        else
-            uniqueEmployees.add(x);
+        duplicatesAndCorrupted.add((x));
     }
 
 }
@@ -149,7 +165,7 @@ class EmployeeParser implements Runnable{
         java.sql.Date dateOfBirth = java.sql.Date.valueOf(DateFormatter.formatDate(components[7]));
         java.sql.Date dateOfJoining = java.sql.Date.valueOf(DateFormatter.formatDate(components[8]));
         Employee e = new Employee(id, namePrefix, firstName, initial, lastName, gender, email, dateOfBirth, dateOfJoining, salary);
-        FileIO.insertEmployee(e);
+        FileIO.LOGGER.info(e.getId());
         return e;
 
     }
@@ -164,12 +180,14 @@ class EmployeeParser implements Runnable{
             try{
                 line = queue.take();
                 newEmployee = parseData(line.split(","));
+                FileIO.insertEmployee(newEmployee);
             } catch (InterruptedException e) {
                 break;
             }
         }
         while ((line = queue.poll()) != null){
             newEmployee = parseData(line.split(","));
+            FileIO.insertEmployee(newEmployee);
         }
     }
 }
@@ -177,8 +195,8 @@ class EmployeeParser implements Runnable{
 
 class DateFormatter {
 
-    private static final SimpleDateFormat inSDF = new SimpleDateFormat("mm/dd/yyyy");
-    private static final SimpleDateFormat outSDF = new SimpleDateFormat("yyyy-mm-dd");
+    private static final SimpleDateFormat inSDF = new SimpleDateFormat("MM/dd/yyyy");
+    private static final SimpleDateFormat outSDF = new SimpleDateFormat("yyyy-MM-dd");
 
     public static String formatDate(String inDate) {
         String outDate = "";
