@@ -98,4 +98,39 @@ public class ValidationTest {
         String result = EmployeeValidate.validateNamePrefix(input);
         assertNull(result);
     }
+
+    //Salary
+    @ParameterizedTest
+    @ValueSource(strings = {"2000", "20000", "200000", "9999999", "99999999"})
+    @DisplayName("returns salary if the salary is valid.")
+    public void validSalaryTest(String input) {
+        String result = EmployeeValidate.validateSalary(input);
+        assertEquals(input, result);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"SALARY", "?????", "293820938023", "1", "1w", "22", "323"})
+    @DisplayName("returns null if the salary is invalid")
+    public void invalidSalaryTest(String input) {
+        String result = EmployeeValidate.validateSalary(input);
+        assertNull(result);
+    }
+
+    //ID
+    @ParameterizedTest
+    @ValueSource(strings = {"232332", "000001", "999999"})
+    @DisplayName("returns salary if the salary is valid.")
+    public void validIDTest(String input) {
+        String result = EmployeeValidate.validateId(input);
+        assertEquals(input, result);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"?????", "1000111", "1", "1w", "22", "323", "3323", "44444", "99999w"})
+    @DisplayName("returns null if the ID is invalid")
+    public void invalidIDTest(String input) {
+        String result = EmployeeValidate.validateId(input);
+        assertNull(result);
+    }
+
 }
