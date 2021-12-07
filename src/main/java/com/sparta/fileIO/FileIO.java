@@ -49,7 +49,7 @@ public class FileIO {
         String email = components[6];
         // THIS DOESN'T WORK. ASK KONRAD TO CHANGE DATE USE
         Date dateOfBirth = (Date) FORMATTER.parse(components[7]);
-        Date dateOfJoining = (Date) FORMATTER.parse(components[7])
+        Date dateOfJoining = (Date) FORMATTER.parse(components[7]);
         return new Employee(id, namePrefix, firstName, initial, lastName, gender, email, dateOfBirth, dateOfJoining, salary);
     }
 
