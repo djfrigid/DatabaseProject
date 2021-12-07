@@ -1,6 +1,8 @@
 package com.sparta.fileIO;
 
 import com.sparta.example.Employee;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.time.format.DateTimeFormatter;
@@ -33,7 +35,7 @@ public class FileIO {
     }
 
     public void checkDuplicate(Employee x){
-        if(employees.contains(x))
+        if(uniqueEmployees.contains(x))
             duplicatesAndCorrupted.add(x);
         else
             uniqueEmployees.add(x);
@@ -111,5 +113,25 @@ class EmployeeParser implements Runnable{
         while ((line = queue.poll()) != null){
             newEmployee = parseData(line.split(","));
         }
+    }
+}
+
+class loggingValues {
+    private static Logger logger = LogManager.getLogger("Update");
+
+    public void logUnique(HashSet<Employee> em) {
+        logger.info("The number of the unique values : " + em.size());
+    }
+
+    public void logDuplicates(List<Employee> d) {
+        logger.info("The number of duplicate values: " + d.size());
+    }
+
+    public void logCorrupt(){
+        logger.info("The number of corrupt values: " );
+    }
+
+    public void errors(){
+        logger.info("error");
     }
 }
