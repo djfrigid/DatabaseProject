@@ -6,6 +6,13 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ValidationTest {
 
@@ -79,5 +86,22 @@ public class ValidationTest {
     public void invalidNameTest(String input) {
         String result = eV.validateName(input);
         assertEquals(null, result);
+
+    }
+
+    /*
+    @ParameterizedTest
+    @ValueSource(strings = {"M", "F"})
+    public void genderValidation(String gender) {
+        assertTrue(validateGender(gender));
+    }
+     */
+
+    @Test
+    public void validationTestTwo() {
+    }
+
+    @Test
+    public void validationTestThree() {
     }
 }
