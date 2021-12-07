@@ -80,6 +80,15 @@ public class FileIO {
         return accessPath;
     }
 
+    public void checkDuplicate(Employee x){
+        if(employees.contains(x))
+            duplicatesAndCorrupted.add(x);
+        else
+            uniqueEmployees.add(x);
+    }
+
+
+
 }
 
 class FileReaderClass implements Runnable{
