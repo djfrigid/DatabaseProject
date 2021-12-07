@@ -8,19 +8,27 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.*;
 
 public class FileIO {
-
-    public static void main(String[] args) {
-
-    }
-
+    private static final int poolSize = 8;
     private HashSet<Employee> uniqueEmployees = new HashSet<>();
     private List<Employee> duplicatesAndCorrupted = new ArrayList<>();
 
-
-    private static void readFromFile(String inputFilename) {
+    public static void main(String[] args) {
+        String filename = "testfile.txt";
+        BlockingQueue<String> queue = new ArrayBlockingQueue<>(256);
+        ExecutorService pool = Executors.newFixedThreadPool(poolSize);
+        for (int i = 0 ; i < poolSize - 1 ; i++){
+            pool.submit(new ParseEmployee(queue));
+        }
+        try {
+            pool.submit(new ReadFromFile(queue, filename)).get();
+            pool.shutdownNow();
+            pool.awaitTermination(1, TimeUnit.HOURS);
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
 
     }
 
