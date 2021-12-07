@@ -3,6 +3,7 @@ package com.sparta.fileIO;
 import com.sparta.example.Employee;
 
 import java.io.*;
+import java.nio.file.Path;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -14,7 +15,7 @@ public class FileIO {
     private List<Employee> duplicatesAndCorrupted = new ArrayList<>();
 
     public static void main(String[] args) {
-        String filename = takeUserInput();
+        Path filename = takeUserInput();
         // Thread Safe Queue to be shared amongst all threads
         BlockingQueue<String> queue = new ArrayBlockingQueue<>(256);
         // Thread pool of fixed size, to be used for parsing Employee lines
@@ -34,27 +35,65 @@ public class FileIO {
 
     }
 
-    private static String takeUserInput(){
+    private static Path takeUserInput(){
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Please enter the name of the file that you would like to read");
-        System.out.println("(Input is case sensitive)");
-        return scanner.nextLine().trim();
+        System.out.println("Please choose whether you would like to use a name(N), relative path(RP) or absolute path(AP) for your file");
+        boolean typeSetFlag = false;
+        String choice = null;
+        while (!typeSetFlag){
+            choice = scanner.nextLine().toUpperCase(Locale.ROOT).trim();
+            if (choice.equals("N") || choice.equals("RP") || choice.equals("AP")){
+                typeSetFlag = true;
+            } else System.out.println("Choice was not one of N, RP or AP");
+        }
+        String accessPath = null;
+        switch (choice){
+            case "N" -> {
+                System.out.println("Please enter the name of the file that you would like to use.");
+                System.out.println("This file should be at the root level of the project");
+                accessPath = scanner.nextLine().trim();
+            }
+            case "RP" -> {
+                System.out.println("Enter the relative path of the file you would like to use");
+                System.out.println("This path is relative to the root level of the project");
+                accessPath = buildSystemIndependentPath(scanner);
+            }
+            case "AP" -> {
+                System.out.println("Enter the absolute path of the file you would like to use");
+                accessPath = buildSystemIndependentPath(scanner);
+            }
+        }
+        return Path.of(accessPath);
+    }
+
+    private static String buildSystemIndependentPath(Scanner scanner) {
+        String accessPath;
+        String regex = "[\\/]";
+        String[] apBits = scanner.nextLine().trim().split(regex);
+        StringBuilder sb = new StringBuilder();
+        String fileSep = File.separator;
+        for (String s : apBits){
+            sb.append(s).append(fileSep);
+        }
+        accessPath = sb.substring(0, sb.length()-1);
+        System.out.println(accessPath);
+        return accessPath;
     }
 
 }
 
 class FileReaderClass implements Runnable{
     private final BlockingQueue<String> queue;
-    private final String inputFilename;
+    private final Path inputFilename;
 
-    public FileReaderClass(BlockingQueue<String> queue, String inputFilename){
+    public FileReaderClass(BlockingQueue<String> queue, Path inputFilename){
         this.queue = queue;
         this.inputFilename = inputFilename;
     }
 
     @Override
     public void run() {
-        try (BufferedReader reader = new BufferedReader(new FileReader(inputFilename))){
+        try (BufferedReader reader = new BufferedReader(new FileReader(String.valueOf(inputFilename)))){
             String nextLine;
             reader.readLine(); // Read first line
             while((nextLine = reader.readLine()) != null){
