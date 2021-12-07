@@ -79,7 +79,6 @@ public class ValidationTest {
     @DisplayName("returns null if the name is invalid. (checks for case sensitive)")
     public void invalidNameTest(String input) {
         String result = EmployeeValidate.validateName(input);
-        assertEquals(null, result);
         assertNull(result);
     }
 }
