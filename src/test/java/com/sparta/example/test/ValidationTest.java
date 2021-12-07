@@ -43,10 +43,10 @@ public class ValidationTest {
     @ValueSource(chars = {'A', 'B', 'C', 'D', 'f', 'g', 'h', 'e', 'f'})
     @DisplayName("returns the initial if the initial is valid.")
     public void validInitialTest(char input) {
+        char expectedResult = Character.toUpperCase(input);
         char result = eV.validateInitial(input);
         assertEquals(input, result);
     }
-
     @ParameterizedTest
     @ValueSource(chars = {'0', '-', '!', '?'})
     @DisplayName("returns null terminator value if the initial is invalid.")
@@ -81,8 +81,8 @@ public class ValidationTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"Talal34", "0George?!", "-Ria@", "M4rk9881", "K0nr4d"})
-    @DisplayName("returns null if the name is invalid.")
+    @ValueSource(strings = {"Talal34", "0George?!", "-Ria", "M4rk9881", "K0nr4d", "tALAL", "gEoRgE", "Konrad-jenkins", "Mark-"})
+    @DisplayName("returns null if the name is invalid. (checks for case sensitive)")
     public void invalidNameTest(String input) {
         String result = eV.validateName(input);
         assertEquals(null, result);
