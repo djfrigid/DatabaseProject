@@ -5,7 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class ValidationTest {
 
@@ -58,7 +58,7 @@ public class ValidationTest {
     @DisplayName("returns null if the email is invalid.")
     public void invalidEmailTest(String input) {
         String result = EmployeeValidate.validateEmail(input);
-        assertEquals(null, result);
+        assertNull(result);
     }
     //Names
     @ParameterizedTest
@@ -74,7 +74,7 @@ public class ValidationTest {
     @DisplayName("returns null if the name is invalid. (checks for case sensitive)")
     public void invalidNameTest(String input) {
         String result = EmployeeValidate.validateName(input);
-        assertEquals(null, result);
+        assertNull(result);
 
     }
 }
