@@ -3,11 +3,9 @@ package com.sparta.fileIO;
 import com.sparta.example.Employee;
 
 import java.io.*;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.concurrent.*;
 
 public class FileIO {
@@ -16,12 +14,16 @@ public class FileIO {
     private List<Employee> duplicatesAndCorrupted = new ArrayList<>();
 
     public static void main(String[] args) {
-        String filename = "EmployeeRecords.csv";
+        String filename = takeUserInput();
+        // Thread Safe Queue to be shared amongst all threads
         BlockingQueue<String> queue = new ArrayBlockingQueue<>(256);
+        // Thread pool of fixed size, to be used for parsing Employee lines
         ExecutorService pool = Executors.newFixedThreadPool(poolSize);
+        // Create Parser threads and put them in the pool
         for (int i = 0 ; i < poolSize - 1 ; i++){
             pool.submit(new EmployeeParser(queue));
         }
+        // Try to read the file, shutting the thread when done, then block until no items left in queue
         try {
             pool.submit(new FileReaderClass(queue, filename)).get();
             pool.shutdownNow();
@@ -30,6 +32,13 @@ public class FileIO {
             e.printStackTrace();
         }
 
+    }
+
+    private static String takeUserInput(){
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Please enter the name of the file that you would like to read");
+        System.out.println("(Input is case sensitive)");
+        return scanner.nextLine().trim();
     }
 
 }
@@ -59,20 +68,23 @@ class FileReaderClass implements Runnable{
 
 class EmployeeParser implements Runnable{
     private final BlockingQueue<String> queue;
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+    private static final SimpleDateFormat FORMATTER = new SimpleDateFormat("MM/dd/yyyy");
 
     public EmployeeParser(BlockingQueue<String> queue){
         this.queue = queue;
     }
 
-    private static Employee parseData(String[] components){
-        int id = Integer.MAX_VALUE;
+    private static Employee parseData(String[] components) {
+        int id = Integer.MIN_VALUE;
         int salary = Integer.MIN_VALUE;
-        try{
+        boolean idParsed = false;
+        try {
             id = Integer.parseInt(components[0]);
+            idParsed = true;
             salary = Integer.parseInt(components[9]);
-        } catch (NumberFormatException nfe){
-            nfe.printStackTrace();
+        } catch (NumberFormatException nfe) {
+            if (idParsed) System.out.println("Error parsing salary field");
+            else System.out.println("Error parsing Employee ID");
         }
         String namePrefix = components[1];
         String firstName = components[2];
@@ -80,10 +92,16 @@ class EmployeeParser implements Runnable{
         String lastName = components[4];
         char gender = components[5].charAt(0);
         String email = components[6];
-        // THIS DOESN'T WORK. BUT I WAS DONE.
-        // Date dateOfBirth = FORMATTER.parse(components[7]);
-        // Date dateOfJoining = FORMATTER.parse(components[7]);
-        Employee e = new Employee(id, namePrefix, firstName, initial, lastName, gender, email, null, null, salary);
+        Date dateOfBirth = null;
+        Date dateOfJoining = null;
+        try {
+            dateOfBirth = FORMATTER.parse(components[7]);
+            dateOfJoining = FORMATTER.parse(components[8]);
+        } catch (ParseException e) {
+            if (dateOfBirth == null) System.out.println("Error parsing Date of Birth");
+            else System.out.println("Error parsing Date of Joining");
+        }
+        Employee e = new Employee(id, namePrefix, firstName, initial, lastName, gender, email, dateOfBirth, dateOfJoining, salary);
         System.out.println(e);
         return e;
     }
@@ -92,6 +110,8 @@ class EmployeeParser implements Runnable{
     public void run() {
         String line;
         Employee newEmployee;
+        // While still reading from the file, run indefinitely. Once reading is over, catch the excpetion and break the loop
+        // Once loop broken, empty queue then shut down.
         while (true){
             try{
                 line = queue.take();
