@@ -16,11 +16,13 @@ public class ValidationTest {
     public void setUp() {
     }
 
+    /*
     @ParameterizedTest
     @ValueSource(strings = {"M", "F"})
     public void genderValidation(String gender) {
         assertTrue(validateGender(gender));
     }
+     */
 
     @Test
     public void validationTestTwo() {

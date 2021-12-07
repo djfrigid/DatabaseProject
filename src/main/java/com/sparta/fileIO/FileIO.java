@@ -16,14 +16,14 @@ public class FileIO {
     private List<Employee> duplicatesAndCorrupted = new ArrayList<>();
 
     public static void main(String[] args) {
-        String filename = "testfile.txt";
+        String filename = "EmployeeRecords.csv";
         BlockingQueue<String> queue = new ArrayBlockingQueue<>(256);
         ExecutorService pool = Executors.newFixedThreadPool(poolSize);
         for (int i = 0 ; i < poolSize - 1 ; i++){
-            pool.submit(new ParseEmployee(queue));
+            pool.submit(new EmployeeParser(queue));
         }
         try {
-            pool.submit(new ReadFromFile(queue, filename)).get();
+            pool.submit(new FileReaderClass(queue, filename)).get();
             pool.shutdownNow();
             pool.awaitTermination(1, TimeUnit.HOURS);
         } catch (InterruptedException | ExecutionException e) {
@@ -34,11 +34,11 @@ public class FileIO {
 
 }
 
-class ReadFromFile implements Runnable{
+class FileReaderClass implements Runnable{
     private final BlockingQueue<String> queue;
     private final String inputFilename;
 
-    public ReadFromFile(BlockingQueue<String> queue, String inputFilename){
+    public FileReaderClass(BlockingQueue<String> queue, String inputFilename){
         this.queue = queue;
         this.inputFilename = inputFilename;
     }
@@ -57,11 +57,11 @@ class ReadFromFile implements Runnable{
     }
 }
 
-class ParseEmployee implements Runnable{
+class EmployeeParser implements Runnable{
     private final BlockingQueue<String> queue;
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("MM/dd/yyyy");
 
-    public ParseEmployee(BlockingQueue<String> queue){
+    public EmployeeParser(BlockingQueue<String> queue){
         this.queue = queue;
     }
 
@@ -81,9 +81,11 @@ class ParseEmployee implements Runnable{
         char gender = components[5].charAt(0);
         String email = components[6];
         // THIS DOESN'T WORK. BUT I WAS DONE.
-        Date dateOfBirth = FORMATTER.parse(components[7]);
-        Date dateOfJoining = FORMATTER.parse(components[7]);
-        return new Employee(id, namePrefix, firstName, initial, lastName, gender, email, dateOfBirth, dateOfJoining, salary);
+        // Date dateOfBirth = FORMATTER.parse(components[7]);
+        // Date dateOfJoining = FORMATTER.parse(components[7]);
+        Employee e = new Employee(id, namePrefix, firstName, initial, lastName, gender, email, null, null, salary);
+        System.out.println(e);
+        return e;
     }
 
     @Override
