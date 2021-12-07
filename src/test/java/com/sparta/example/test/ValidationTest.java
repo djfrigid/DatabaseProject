@@ -81,4 +81,21 @@ public class ValidationTest {
         String result = EmployeeValidate.validateName(input);
         assertNull(result);
     }
+
+    //Prefix
+    @ParameterizedTest
+    @CsvSource({"Mrs. , Mrs.", "ms, Ms.", "Ms., Ms.", "dr, Dr.", "Dr., Dr.", "Prof., Prof.", "Hon., Hon.", "prof., Prof."})
+    @DisplayName("returns the prefix if the prefix is valid.")
+    public void validPrefixTest(String input, String expectedOutput) {
+        String result = EmployeeValidate.validateNamePrefix(input);
+        assertEquals(expectedOutput, result);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"aklsjfdakl", "000", "???"})
+    @DisplayName("returns null if the prefix is invalid.")
+    public void invalidPrefixTest(String input) {
+        String result = EmployeeValidate.validateNamePrefix(input);
+        assertNull(result);
+    }
 }
