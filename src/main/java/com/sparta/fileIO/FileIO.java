@@ -139,15 +139,8 @@ class EmployeeParser implements Runnable{
         char gender = components[5].charAt(0);
         String email = components[6];
 
-        Date dateOfBirth = null;
-        Date dateOfJoining = null;
-        try {
-            dateOfBirth = FORMATTER.parse(components[7]);
-            dateOfJoining = FORMATTER.parse(components[8]);
-        } catch (ParseException e) {
-            if (dateOfBirth == null) System.out.println("Error parsing Date of Birth");
-            else System.out.println("Error parsing Date of Joining");
-        }
+        java.sql.Date dateOfBirth = java.sql.Date.valueOf(DateFormatter.formatDate(components[7]));
+        java.sql.Date dateOfJoining = java.sql.Date.valueOf(DateFormatter.formatDate(components[8]));
         Employee e = new Employee(id, namePrefix, firstName, initial, lastName, gender, email, dateOfBirth, dateOfJoining, salary);
         System.out.println(e);
         return e;
@@ -171,5 +164,24 @@ class EmployeeParser implements Runnable{
         while ((line = queue.poll()) != null){
             newEmployee = parseData(line.split(","));
         }
+    }
+}
+
+
+class DateFormatter {
+
+    private static SimpleDateFormat inSDF = new SimpleDateFormat("mm/dd/yyyy");
+    private static SimpleDateFormat outSDF = new SimpleDateFormat("yyyy-mm-dd");
+
+    public static String formatDate(String inDate) {
+        String outDate = "";
+        if (inDate != null) {
+            try {
+                java.util.Date date = inSDF.parse(inDate);
+                outDate = outSDF.format(date);
+            } catch (ParseException ex){
+            }
+        }
+        return outDate;
     }
 }
