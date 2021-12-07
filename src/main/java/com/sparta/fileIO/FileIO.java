@@ -87,8 +87,6 @@ public class FileIO {
             uniqueEmployees.add(x);
     }
 
-
-
 }
 
 class FileReaderClass implements Runnable{
@@ -140,6 +138,7 @@ class EmployeeParser implements Runnable{
         String lastName = components[4];
         char gender = components[5].charAt(0);
         String email = components[6];
+
         Date dateOfBirth = null;
         Date dateOfJoining = null;
         try {
@@ -152,6 +151,7 @@ class EmployeeParser implements Runnable{
         Employee e = new Employee(id, namePrefix, firstName, initial, lastName, gender, email, dateOfBirth, dateOfJoining, salary);
         System.out.println(e);
         return e;
+
     }
 
     @Override
