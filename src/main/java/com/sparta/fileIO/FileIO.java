@@ -11,8 +11,8 @@ import java.util.concurrent.*;
 
 public class FileIO {
     private static final int poolSize = 8;
-    private HashSet<Employee> uniqueEmployees = new HashSet<>();
-    private List<Employee> duplicatesAndCorrupted = new ArrayList<>();
+    private static HashSet<Employee> uniqueEmployees = new HashSet<>();
+    private static List<Employee> duplicatesAndCorrupted = new ArrayList<>();
 
     public static void main(String[] args) {
         Path filename = takeUserInput();
@@ -32,6 +32,13 @@ public class FileIO {
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
+
+        Iterator<Employee> it = uniqueEmployees.iterator();
+        while(it.hasNext()){
+            System.out.println(it.next());
+        }
+
+        System.out.println("Number of records: " + uniqueEmployees.size());
 
     }
 
@@ -80,7 +87,7 @@ public class FileIO {
         return accessPath;
     }
 
-    public void checkDuplicate(Employee x){
+    public static void insertEmployee(Employee x){
         if(uniqueEmployees.contains(x))
             duplicatesAndCorrupted.add(x);
         else
@@ -142,7 +149,7 @@ class EmployeeParser implements Runnable{
         java.sql.Date dateOfBirth = java.sql.Date.valueOf(DateFormatter.formatDate(components[7]));
         java.sql.Date dateOfJoining = java.sql.Date.valueOf(DateFormatter.formatDate(components[8]));
         Employee e = new Employee(id, namePrefix, firstName, initial, lastName, gender, email, dateOfBirth, dateOfJoining, salary);
-        System.out.println(e);
+        FileIO.insertEmployee(e);
         return e;
 
     }
@@ -170,8 +177,8 @@ class EmployeeParser implements Runnable{
 
 class DateFormatter {
 
-    private static SimpleDateFormat inSDF = new SimpleDateFormat("mm/dd/yyyy");
-    private static SimpleDateFormat outSDF = new SimpleDateFormat("yyyy-mm-dd");
+    private static final SimpleDateFormat inSDF = new SimpleDateFormat("mm/dd/yyyy");
+    private static final SimpleDateFormat outSDF = new SimpleDateFormat("yyyy-mm-dd");
 
     public static String formatDate(String inDate) {
         String outDate = "";
@@ -180,6 +187,7 @@ class DateFormatter {
                 java.util.Date date = inSDF.parse(inDate);
                 outDate = outSDF.format(date);
             } catch (ParseException ex){
+                ex.printStackTrace();
             }
         }
         return outDate;
