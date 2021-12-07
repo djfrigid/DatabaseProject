@@ -3,33 +3,58 @@ package com.sparta.fileIO;
 import com.sparta.example.Employee;
 
 import java.io.*;
-import java.text.ParsePosition;
-import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
 
 public class FileIO {
 
     public static void main(String[] args) {
 
     }
+
     private HashSet<Employee> uniqueEmployees = new HashSet<>();
     private List<Employee> duplicatesAndCorrupted = new ArrayList<>();
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("MM/dd/yyyy");
 
-    private static void readFromFile(String inputFilename, String outputFilename) {
-        try (BufferedReader reader = new BufferedReader(new FileReader(inputFilename)); BufferedWriter writer = new BufferedWriter(new FileWriter(outputFilename))){
+
+    private static void readFromFile(String inputFilename) {
+
+    }
+
+}
+
+class ReadFromFile implements Runnable{
+    private final BlockingQueue<String> queue;
+    private final String inputFilename;
+
+    public ReadFromFile(BlockingQueue<String> queue, String inputFilename){
+        this.queue = queue;
+        this.inputFilename = inputFilename;
+    }
+
+    @Override
+    public void run() {
+        try (BufferedReader reader = new BufferedReader(new FileReader(inputFilename))){
             String nextLine;
             reader.readLine(); // Read first line
             while((nextLine = reader.readLine()) != null){
-                parseData(nextLine.split(","));
+                queue.put(nextLine);
             }
-        } catch (IOException e){
+        } catch (IOException | InterruptedException e){
             e.printStackTrace();
         }
+    }
+}
+
+class ParseEmployee implements Runnable{
+    private final BlockingQueue<String> queue;
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+
+    public ParseEmployee(BlockingQueue<String> queue){
+        this.queue = queue;
     }
 
     private static Employee parseData(String[] components){
@@ -47,11 +72,26 @@ public class FileIO {
         String lastName = components[4];
         char gender = components[5].charAt(0);
         String email = components[6];
-        // THIS DOESN'T WORK. ASK KONRAD TO CHANGE DATE USE
-        Date dateOfBirth = (Date) FORMATTER.parse(components[7]);
-        Date dateOfJoining = (Date) FORMATTER.parse(components[7])
+        // THIS DOESN'T WORK. BUT I WAS DONE.
+        Date dateOfBirth = FORMATTER.parse(components[7]);
+        Date dateOfJoining = FORMATTER.parse(components[7]);
         return new Employee(id, namePrefix, firstName, initial, lastName, gender, email, dateOfBirth, dateOfJoining, salary);
     }
 
-
+    @Override
+    public void run() {
+        String line;
+        Employee newEmployee;
+        while (true){
+            try{
+                line = queue.take();
+                newEmployee = parseData(line.split(","));
+            } catch (InterruptedException e) {
+                break;
+            }
+        }
+        while ((line = queue.poll()) != null){
+            newEmployee = parseData(line.split(","));
+        }
+    }
 }
