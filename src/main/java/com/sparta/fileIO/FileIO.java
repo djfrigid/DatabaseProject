@@ -81,7 +81,7 @@ public class FileIO {
     }
 
     public void checkDuplicate(Employee x){
-        if(employees.contains(x))
+        if(uniqueEmployees.contains(x))
             duplicatesAndCorrupted.add(x);
         else
             uniqueEmployees.add(x);
