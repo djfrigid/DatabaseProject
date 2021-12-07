@@ -88,12 +88,19 @@ class EmployeeParser implements Runnable{
         String lastName = components[4];
         char gender = components[5].charAt(0);
         String email = components[6];
+
+        // THIS DOESN'T WORK. ASK KONRAD TO CHANGE DATE USE
+        Date dateOfBirth = (Date) FORMATTER.parse(components[7]);
+        Date dateOfJoining = (Date) FORMATTER.parse(components[7]);
+        return new Employee(id, namePrefix, firstName, initial, lastName, gender, email, dateOfBirth, dateOfJoining, salary);
+
         // THIS DOESN'T WORK. BUT I WAS DONE.
         // Date dateOfBirth = FORMATTER.parse(components[7]);
         // Date dateOfJoining = FORMATTER.parse(components[7]);
         Employee e = new Employee(id, namePrefix, firstName, initial, lastName, gender, email, null, null, salary);
         System.out.println(e);
         return e;
+
     }
 
     @Override
