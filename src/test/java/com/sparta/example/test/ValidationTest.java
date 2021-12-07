@@ -46,7 +46,7 @@ public class ValidationTest {
     }
     //Emails
     @ParameterizedTest
-    @ValueSource(strings = {"hellohello@gmail.com", "spartaglobal@spartaglobal.com"})
+    @ValueSource(strings = {"hellohello@gmail.com", "spartaglobal@spartaglobal.com", "george@mail.net"})
     @DisplayName("returns the email if the email is valid.")
     public void validEmailTest(String input) {
         String result = EmployeeValidate.validateEmail(input);
