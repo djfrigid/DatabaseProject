@@ -4,6 +4,7 @@ import com.sparta.example.Employee;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.sparta.util.PrintTimingData;
 import com.sparta.validate.EmployeeValidate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,7 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.*;
 
-import static com.sparta.Driver.LOGGER;
+import static com.sparta.util.Constants.LOGGER;
 
 public class FileIO {
     private static final int poolSize = 8;
@@ -35,20 +36,24 @@ public class FileIO {
         }
         // Try to read the file, shutting the thread when done, then block until no items left in queue
         try {
+            long startTime = System.nanoTime();
             pool.submit(new FileReaderClass(queue, filename)).get();
             pool.shutdownNow();
+            long endTime = System.nanoTime();
+            PrintTimingData.logTimingData("File read done in: ", startTime, endTime);
+            startTime = System.nanoTime();
             if (pool.awaitTermination(10, TimeUnit.SECONDS)){
+                endTime = System.nanoTime();
                 LOGGER.info("Parsing threads now finished");
+                PrintTimingData.logTimingData("Parsing done in: ", startTime, endTime);
             }
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
-
         List<Collection<Employee>> collections = new ArrayList<>(2);
         collections.add(uniqueEmployees);
         collections.add(duplicatesAndCorrupted);
         return collections;
-
     }
 
     private static Path takeUserInput(){
