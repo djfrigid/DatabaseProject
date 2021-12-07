@@ -2,6 +2,7 @@ package com.sparta.fileIO;
 
 import com.sparta.example.Employee;
 
+import com.sparta.validate.EmployeeValidate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,7 +18,7 @@ public class FileIO {
     private static final HashSet<Employee> uniqueEmployees = new HashSet<>();
     private static final List<Employee> duplicatesAndCorrupted = new ArrayList<>();
     public static final Logger LOGGER = LogManager.getLogger();
-    private static final Scanner scanner = new Scanner(System.in);
+    private static final Scanner SCANNER = new Scanner(System.in);
 
     public static void main(String[] args) {
         BlockingQueue<String> queue = new ArrayBlockingQueue<>(256);
@@ -50,7 +51,7 @@ public class FileIO {
         boolean typeSetFlag = false;
         String choice = null;
         while (!typeSetFlag){
-            choice = scanner.nextLine().toUpperCase(Locale.ROOT).trim();
+            choice = SCANNER.nextLine().toUpperCase(Locale.ROOT).trim();
             if (choice.equals("N") || choice.equals("RP") || choice.equals("AP")){
                 typeSetFlag = true;
             } else System.out.println("Choice was not one of N, RP or AP");
@@ -60,7 +61,7 @@ public class FileIO {
             case "N" -> {
                 System.out.println("Please enter the name of the file that you would like to use.");
                 System.out.println("This file should be at the root level of the project");
-                accessPath = scanner.nextLine().trim();
+                accessPath = SCANNER.nextLine().trim();
             }
             case "RP" -> {
                 System.out.println("Enter the relative path of the file you would like to use");
@@ -78,7 +79,7 @@ public class FileIO {
     private static String buildSystemIndependentPath() {
         String accessPath;
         String regex = "[\\/]";
-        String[] apBits = scanner.nextLine().trim().split(regex);
+        String[] apBits = SCANNER.nextLine().trim().split(regex);
         StringBuilder sb = new StringBuilder();
         String fileSep = File.separator;
         for (String s : apBits){
@@ -118,7 +119,7 @@ class FileReaderClass implements Runnable{
             }
             FileIO.LOGGER.info("Items added to queue are: " + count);
         } catch (IOException | InterruptedException e){
-            FileIO.LOGGER.fatal("Exception occurred");
+            FileIO.LOGGER.warn("Exception occurred");
         }
     }
 }
@@ -141,15 +142,14 @@ class EmployeeParser implements Runnable{
         } catch (NumberFormatException nfe) {
             if (idParsed) System.out.println("Error parsing salary field");
             else System.out.println("Error parsing Employee ID");
-            FileIO.LOGGER.fatal("Fuck");
+            FileIO.LOGGER.error("Parsing failed");
         }
         String namePrefix = components[1];
-        String firstName = components[2];
-        char initial = components[3].charAt(0);
-        String lastName = components[4];
-        char gender = components[5].charAt(0);
-        String email = components[6];
-
+        String firstName = EmployeeValidate.validateName(components[2]);
+        char initial = EmployeeValidate.validateInitial(components[3].charAt(0));
+        String lastName = EmployeeValidate.validateName(components[4]);
+        char gender = EmployeeValidate.validateGender(components[5].charAt(0));
+        String email = EmployeeValidate.validateEmail(components[6]);
         java.sql.Date dateOfBirth = java.sql.Date.valueOf(DateFormatter.formatDate(components[7]));
         java.sql.Date dateOfJoining = java.sql.Date.valueOf(DateFormatter.formatDate(components[8]));
         return new Employee(id, namePrefix, firstName, initial, lastName, gender, email, dateOfBirth, dateOfJoining, salary);
