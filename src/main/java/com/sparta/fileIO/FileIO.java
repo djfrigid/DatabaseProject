@@ -86,11 +86,13 @@ public class FileIO {
         return Path.of(accessPath);
     }
 
-    public void checkDuplicate(Employee x){
+    /*public void checkDuplicate(Employee x){
         if(uniqueEmployees.contains(x))
             duplicatesAndCorrupted.add(x);
         else
             uniqueEmployees.add(x);
+
+     */
     private static String buildSystemIndependentPath() {
         String accessPath;
         String regex = "[\\/]";
@@ -211,7 +213,7 @@ class DateFormatter {
     }
 }
 
-class loggingValues {
+/*class loggingValues {
     private static Logger logger = LogManager.getLogger("Update");
 
     public void logUnique(HashSet<Employee> em) {
@@ -230,3 +232,5 @@ class loggingValues {
         logger.info("error");
     }
 }
+
+ */
