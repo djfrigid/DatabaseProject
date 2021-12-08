@@ -25,3 +25,4 @@ hs_err_pid*
 EmployeeRecords.csv
 
 .idea/
+src/main/resources/connection.properties

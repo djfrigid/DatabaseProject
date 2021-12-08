@@ -1,6 +1,6 @@
 package com.sparta.example;
 
-import java.util.Date;
+import java.sql.Date;
 
 public class Employee {
 
