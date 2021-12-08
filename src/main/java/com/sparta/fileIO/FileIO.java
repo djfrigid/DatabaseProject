@@ -151,15 +151,15 @@ class EmployeeParser implements Runnable{
         int salary = Integer.MIN_VALUE;
         boolean idParsed = false;
         try {
-            id = Integer.parseInt(components[0]);
+            id = Integer.parseInt(EmployeeValidate.validateId(components[0]));
             idParsed = true;
-            salary = Integer.parseInt(components[9]);
+            salary = Integer.parseInt(EmployeeValidate.validateSalary(components[9]));
         } catch (NumberFormatException nfe) {
             if (idParsed) System.out.println("Error parsing salary field");
             else System.out.println("Error parsing Employee ID");
             LOGGER.error("Parsing failed");
         }
-        String namePrefix = components[1];
+        String namePrefix = EmployeeValidate.validateNamePrefix(components[1]);
         String firstName = EmployeeValidate.validateName(components[2]);
         char initial = EmployeeValidate.validateInitial(components[3].charAt(0));
         String lastName = EmployeeValidate.validateName(components[4]);
