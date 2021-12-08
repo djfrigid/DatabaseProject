@@ -19,6 +19,7 @@ import static com.sparta.util.Constants.LOGGER;
 public class FileIO {
     private static final int poolSize = 8;
     private static final HashSet<Employee> uniqueEmployees = new HashSet<>();
+    private static final HashSet<Integer> uniqueId = new HashSet<>();
     private static final List<Employee> duplicatesAndCorrupted = new ArrayList<>();
     private static final Scanner SCANNER = new Scanner(System.in);
 
@@ -99,9 +100,13 @@ public class FileIO {
     }
 
     public static synchronized void insertEmployee(Employee x){
-        if (uniqueEmployees.contains(x))
+        if (uniqueId.contains(x.getId())){
             duplicatesAndCorrupted.add((x));
-        else uniqueEmployees.add(x);
+        }
+        else{
+            uniqueId.add(x.getId());
+            uniqueEmployees.add(x);
+        }
     }
 
 }
