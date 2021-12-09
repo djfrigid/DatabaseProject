@@ -1,12 +1,15 @@
 package com.sparta.example.test;
 
+import com.sparta.util.DateFormatter;
 import com.sparta.validate.EmployeeValidate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+
+import java.sql.Date;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ValidationTest {
 
@@ -133,4 +136,12 @@ public class ValidationTest {
         assertNull(result);
     }
 
+    @ParameterizedTest
+    @CsvSource({"10/12/1999, 1999-10-12", "05/25/2000, 2000-05-25"})
+    @DisplayName("returns the date in the correct SQL format if valid")
+    public void dateFormatterTest(String input, String expectedOutput) {
+        Date result = java.sql.Date.valueOf(DateFormatter.formatDate(input));
+        Date expectedDate = java.sql.Date.valueOf((expectedOutput));
+        assertTrue(result.compareTo(expectedDate) == 0);
+    }
 }
