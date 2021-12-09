@@ -11,11 +11,10 @@ public class EmployeeValidate {
     private static String emailRegex = "^[a-zA-Z0-9_!#$%&’*+=?`{|}~^.-]+@" +
             "[a-zA-Z0-9]+[.][a-zA-Z0-9]{2,3}(?:[.][a-zA-Z0-9]{2,3})?$";
     private static String nameRegex = "^[A-Za-z]{2,}(?:-[A-Za-z]{2,})?$";
-    private static String prefixRegex = "^[A-Za-z]{2,4}[.]?$";
-    private static String idRegex = "^[0-9]{6}";
+    private static String idRegex = "^[0-9]{1,6}";
     private static String salaryRegex = "[0-9]{4,8}";
-    private static String dateRegex = "^([0-1][0-9])[\\/]([0-3][0-9])[\\/]([0-9]{4})";
-    private static String validDateRegex = "^[0-1][0-9][0-3][0-9][0-9]{4}";
+    private static String dateRegex = "^([0][1-9]|[1][0-2])[\\/]([0-2][0-9]|[3][0-1])[\\/]([1][8-9][0-9]{2}|2[0-9]{3})$";
+    private static String validDateRegex = "^([0][1-9]|[1][0-2])([0-2][0-9]|[3][0-1])([1][8-9][0-9]{2}|2[0-9]{3})$";
     private static Pattern emailPattern = Pattern.compile(emailRegex);
     private static Pattern namePattern = Pattern.compile(nameRegex);
     private static Pattern idPattern = Pattern.compile(idRegex);
@@ -116,9 +115,9 @@ public class EmployeeValidate {
             return date;
         }
 
-        String dummy = date.replaceAll("[-:;]", "");
-        if(matches(validateDatePattern, dummy)){
-            StringBuilder returnDate = new StringBuilder(dummy);
+        String strippedDate = date.replaceAll("[-:;]", "");
+        if(matches(validateDatePattern, strippedDate)){
+            StringBuilder returnDate = new StringBuilder(strippedDate);
             returnDate.insert(2, '/');
             returnDate.insert(5, '/');
             return returnDate.toString();
