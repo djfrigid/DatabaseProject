@@ -136,6 +136,7 @@ public class ValidationTest {
         assertNull(result);
     }
 
+    //Dates
     @ParameterizedTest
     @CsvSource({"10/12/1999, 1999-10-12", "05/25/2000, 2000-05-25"})
     @DisplayName("returns the date in the correct SQL format if valid")
@@ -143,5 +144,23 @@ public class ValidationTest {
         Date result = java.sql.Date.valueOf(DateFormatter.formatDate(input));
         Date expectedDate = java.sql.Date.valueOf((expectedOutput));
         assertTrue(result.compareTo(expectedDate) == 0);
+    }
+
+    @ParameterizedTest
+    @CsvSource({"1995-05-25, 2000-05-25, 1954-04-21, 2003-12-09"})
+    @DisplayName("returns the dob if employee age => 18")
+    public void validAgeTest(String input) {
+        Date dob = java.sql.Date.valueOf((input));
+        Date result = EmployeeValidate.validateAge(dob);
+        assertEquals(dob, result);
+    }
+
+    @ParameterizedTest
+    @CsvSource({"2003-12-10"})
+    @DisplayName("returns null if employee age < 18")
+    public void invalidAgeTest(String input) {
+        Date dob = java.sql.Date.valueOf((input));
+        Date result = EmployeeValidate.validateAge(dob);
+        assertNull(result);
     }
 }
