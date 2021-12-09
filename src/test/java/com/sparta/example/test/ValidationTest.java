@@ -147,6 +147,14 @@ public class ValidationTest {
     }
 
     @ParameterizedTest
+    @ValueSource(strings = {"35/12/1999"})
+    @DisplayName("returns the date in the correct SQL format if valid")
+    public void invalidDateFormatterTest(String input) {
+        Date result = java.sql.Date.valueOf(DateFormatter.formatDate(input));
+        assertNull(result);
+    }
+
+    @ParameterizedTest
     @ValueSource(strings = {"1995-05-25", "2000-05-25", "1954-04-21", "2003-12-09"})
     @DisplayName("returns the dob if employee age => 18")
     public void validAgeTest(String input) {
