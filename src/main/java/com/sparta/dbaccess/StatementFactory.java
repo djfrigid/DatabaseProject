@@ -75,7 +75,7 @@ public class StatementFactory {
         if(updateEmployee ==null){
             updateEmployee = ConnectionFactory.getConnection()
                     .prepareStatement("UPDATE employees " +
-                            "SET namePrefix = ? " +
+                            "SET namePrefix = ?, " +
                             "SET firstName =  ? "+
                             "SET initial = ? "+
                             "SET  lastName = ?" +

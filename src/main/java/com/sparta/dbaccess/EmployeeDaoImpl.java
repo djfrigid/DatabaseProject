@@ -1,10 +1,9 @@
 package com.sparta.dbaccess;
 
-import com.sparta.dbaccess.EmployeeDao;
 import com.sparta.employee.Employee;
-import com.sparta.dbaccess.StatementFactory;
 
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,6 +12,8 @@ import java.util.List;
 import static com.sparta.util.Constants.LOGGER;
 
 public class EmployeeDaoImpl implements EmployeeDao {
+
+    private Connection connection = ConnectionFactory.getConnectionInstance();
 
     public EmployeeDaoImpl(){
 
@@ -89,7 +90,8 @@ public class EmployeeDaoImpl implements EmployeeDao {
 
     @Override
     public void insertEmployee(Employee employee) {
-        try(PreparedStatement stmt = StatementFactory.getInsertEmployee()) {
+        try {
+            PreparedStatement stmt = MTStatementFactory.getInsertEmployee(connection);
             stmt.setInt(1, employee.getId());
             stmt.setString(2,employee.getNamePrefix());
             stmt.setString(3,employee.getFirstName());
@@ -101,7 +103,7 @@ public class EmployeeDaoImpl implements EmployeeDao {
             stmt.setDate(9,employee.getDateOfJoining());
             stmt.setInt(10,employee.getSalary());
             int rowAffected = stmt.executeUpdate();
-            LOGGER.info("Records inserted: " + rowAffected);
+            // LOGGER.info("Records inserted: " + rowAffected);
         } catch (SQLException | IOException e) {
             e.printStackTrace();
             LOGGER.warn("Insert unsuccessful!");
@@ -136,7 +138,7 @@ public class EmployeeDaoImpl implements EmployeeDao {
         try (PreparedStatement stmt = StatementFactory.getDeleteEmployee()){
             stmt.setInt(1, id);
             int rowAffected = stmt.executeUpdate();
-            LOGGER.info("Records deleted: " + rowAffected);
+            // LOGGER.info("Records deleted: " + rowAffected);
         } catch (SQLException | IOException throwables) {
             throwables.printStackTrace();
             LOGGER.error("Error deleting record!");

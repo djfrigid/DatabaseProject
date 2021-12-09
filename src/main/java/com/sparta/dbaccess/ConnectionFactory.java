@@ -31,6 +31,20 @@ public class ConnectionFactory {
         if(connection != null) connection.close();
     }
 
+    public static Connection getConnectionInstance(){
+        Properties properties = new Properties();
+        Connection connectionInst = null;
+        try {
+            properties.load(new FileReader("connection.properties"));
+            String url = properties.getProperty("dbUrl");
+            String user = properties.getProperty("dbUser");
+            String password = properties.getProperty("dbPassword");
+            connectionInst = DriverManager.getConnection(url, user, password);
+        } catch (IOException | SQLException e) {
+            e.printStackTrace();
+        }
+        return connectionInst;
+    }
 
 
 
