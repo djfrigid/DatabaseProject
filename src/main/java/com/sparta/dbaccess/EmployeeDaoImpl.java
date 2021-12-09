@@ -43,6 +43,16 @@ public class EmployeeDaoImpl implements EmployeeDao {
         }
     }
 
+    public void truncateTable() {
+        try(PreparedStatement stmt = StatementFactory.getTruncateStatement()){
+            stmt.executeUpdate();
+            LOGGER.info("Table truncated");
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            LOGGER.warn("Truncating unsuccessful! ");
+        }
+    }
+
     @Override
     public List<Employee> getAllEmployees() {
         List<Employee> listAllEmployees = new ArrayList<>();

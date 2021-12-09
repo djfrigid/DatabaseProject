@@ -19,7 +19,7 @@ public class MultithreadedDBWrites {
         List<Set<Employee>> theSets = partitionSet(toWrite);
         long startTime = System.nanoTime();
         for (int i = 0 ; i < poolSize ; i++){
-            System.out.println("Chunk " + "has: " + theSets.get(i).size() + "items");
+            System.out.println("Chunk " + i +  " has: " + theSets.get(i).size() + "items");
             submitToPool(pool, theSets.get(i));
         }
         pool.shutdown();

@@ -11,6 +11,7 @@ public class StatementFactory {
 
     private static PreparedStatement dropTable = null;
     private static PreparedStatement createTable = null;
+    private static PreparedStatement truncateTable = null;
     private static PreparedStatement getAllEmployees = null;
     private static PreparedStatement getOneEmployee = null;
     private static PreparedStatement insertEmployee = null;
@@ -44,6 +45,14 @@ public class StatementFactory {
         }
         return createTable;
     }
+    public static PreparedStatement getTruncateStatement() throws SQLException {
+        if(truncateTable == null){
+            truncateTable = ConnectionFactory.getConnection()
+                    .prepareStatement("TRUNCATE TABLE employees");
+        }
+        return truncateTable;
+    }
+
 
     public static PreparedStatement getAllEmployees() throws SQLException {
         if(getAllEmployees == null){
@@ -106,4 +115,5 @@ public class StatementFactory {
         if (updateEmployee != null) updateEmployee.close();
         if (deleteEmployee != null) deleteEmployee.close();
     }
+
 }
