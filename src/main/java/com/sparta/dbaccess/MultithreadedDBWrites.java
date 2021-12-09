@@ -4,6 +4,7 @@ import com.sparta.employee.Employee;
 import com.sparta.util.PrintTimingData;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.*;
@@ -11,59 +12,52 @@ import java.util.concurrent.*;
 import static com.sparta.util.Constants.LOGGER;
 
 public class MultithreadedDBWrites {
-    private static final int poolSize = 8;
+    private static final int poolSize = 20;
 
     public static void writeNonDuplicatesOnly(Set<Employee> toWrite){
         ExecutorService pool = Executors.newFixedThreadPool(poolSize);
-        List<List<Employee>> masterList = splitEmployeeSetForMT(toWrite);
+        List<Set<Employee>> theSets = partitionSet(toWrite);
+        long startTime = System.nanoTime();
         for (int i = 0 ; i < poolSize ; i++){
-            System.out.println("Chunk " + i + " is this many big: " + masterList.get(i).size());
-            submitToPool(pool, masterList.get(i));
+            System.out.println("Chunk " + "has: " + theSets.get(i).size() + "items");
+            submitToPool(pool, theSets.get(i));
         }
-        System.exit(0);
-        try{
-            long startTime = System.nanoTime();
-            if (pool.awaitTermination(10, TimeUnit.SECONDS)){
+        pool.shutdown();
+        try {
+            if(pool.awaitTermination(30,TimeUnit.SECONDS)){
                 long endTime = System.nanoTime();
                 PrintTimingData.logTimingData("Writing done in: ", startTime, endTime);
-            } else {
-                LOGGER.info("");
+                pool.shutdownNow();
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        pool.shutdownNow();
-        LOGGER.info("P");
     }
 
-    public static void submitToPool(ExecutorService pool, List<Employee> chunk){
+    public static void submitToPool(ExecutorService pool, Set<Employee> chunk){
         pool.submit(new DBWriter(chunk));
     }
 
-    public static List<List<Employee>> splitEmployeeSetForMT(Set<Employee> toWrite){
-        List<Employee> listEmployees = new ArrayList<>(toWrite);
-        int chunkSize = toWrite.size()/poolSize;
-        int lastRead = (chunkSize*poolSize)+1;
-        List<Employee> autoChunkableListEmployees = listEmployees.subList(0, lastRead);
-        List<Employee> leftovers = listEmployees.subList(lastRead, listEmployees.size());
-        List<List<Employee>> chunks = new ArrayList<>(poolSize);
-        for (int i = 0 ; i < poolSize ; i++){
-            List<Employee> chunk = autoChunkableListEmployees.subList(chunkSize*i, chunkSize*(i+1));
-            chunks.add(chunk);
+    public static List<Set<Employee>> partitionSet(Set<Employee> toWrite){
+        List<Set<Employee>> theSets = new ArrayList<>(poolSize);
+        for(int i = 0; i < poolSize; i++){
+            theSets.add(new HashSet<>());
         }
-        chunks.get(chunks.size()-1).addAll(leftovers);
-       // List<Employee> splitOne = listEmployees.subList(0, listEmployees.size()/2);
-        //List<Employee> splitTwo = listEmployees.subList(listEmployees.size()/2, listEmployees.size());
-        return chunks;
+
+        int index =0;
+        for(Employee employee: toWrite){
+            theSets.get(index++ % poolSize).add(employee);
+        }
+        return theSets;
     }
 }
 
 class DBWriter implements Runnable{
-    private final List<Employee> chunk;
+    private final Set<Employee> chunk;
     private final EmployeeDao employeeDao = new EmployeeDaoImpl();
     private int count = 0;
 
-    public DBWriter(List<Employee> chunk){
+    public DBWriter(Set<Employee> chunk){
         this.chunk = chunk;
     }
 
