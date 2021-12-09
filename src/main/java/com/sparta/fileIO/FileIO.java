@@ -2,15 +2,12 @@ package com.sparta.fileIO;
 
 import com.sparta.example.Employee;
 
+import com.sparta.util.DateFormatter;
 import com.sparta.util.PrintTimingData;
 import com.sparta.validate.EmployeeValidate;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.nio.file.Path;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.*;
 
@@ -187,24 +184,5 @@ class EmployeeParser implements Runnable{
             newEmployee = parseData(line.split(","));
             FileIO.insertEmployee(newEmployee);
         }
-    }
-}
-
-class DateFormatter {
-
-    private static final SimpleDateFormat inSDF = new SimpleDateFormat("MM/dd/yyyy");
-    private static final SimpleDateFormat outSDF = new SimpleDateFormat("yyyy-MM-dd");
-
-    public static String formatDate(String inDate) {
-        String outDate = "";
-        if (inDate != null) {
-            try {
-                java.util.Date date = inSDF.parse(inDate);
-                outDate = outSDF.format(date);
-            } catch (ParseException ex){
-                ex.printStackTrace();
-            }
-        }
-        return outDate;
     }
 }
