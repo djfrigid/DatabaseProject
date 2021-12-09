@@ -30,7 +30,7 @@ public class ConnectionFactory {
         if(connection != null) connection.close();
     }
 
-    public Connection getConnectionInstance() {
+    public static Connection getConnectionInstance() {
         Connection connectionInstance = null;
         Properties properties = new Properties();
         try {

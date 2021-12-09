@@ -43,11 +43,15 @@ public class MultithreadedDBWrites {
     public static List<List<Employee>> splitEmployeeSetForMT(Set<Employee> toWrite){
         List<Employee> listEmployees = new ArrayList<>(toWrite);
         int chunkSize = toWrite.size()/poolSize;
+        int lastRead = (chunkSize*poolSize)+1;
+        List<Employee> autoChunkableListEmployees = listEmployees.subList(0, lastRead);
+        List<Employee> leftovers = listEmployees.subList(lastRead, listEmployees.size());
         List<List<Employee>> chunks = new ArrayList<>(poolSize);
         for (int i = 0 ; i < poolSize ; i++){
-            List<Employee> chunk = listEmployees.subList(chunkSize*i, chunkSize*(i+1));
+            List<Employee> chunk = autoChunkableListEmployees.subList(chunkSize*i, chunkSize*(i+1));
             chunks.add(chunk);
         }
+        chunks.get(chunks.size()-1).addAll(leftovers);
        // List<Employee> splitOne = listEmployees.subList(0, listEmployees.size()/2);
         //List<Employee> splitTwo = listEmployees.subList(listEmployees.size()/2, listEmployees.size());
         return chunks;
