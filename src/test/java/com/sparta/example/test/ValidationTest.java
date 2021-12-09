@@ -122,7 +122,7 @@ public class ValidationTest {
     //ID
     @ParameterizedTest
     @ValueSource(strings = {"232332", "000001", "999999"})
-    @DisplayName("returns salary if the salary is valid.")
+    @DisplayName("returns ID if the ID is valid.")
     public void validIDTest(String input) {
         String result = EmployeeValidate.validateId(input);
         assertEquals(input, result);
@@ -175,7 +175,7 @@ public class ValidationTest {
     @ParameterizedTest
     @CsvSource({"10/12/1999, 10/12/1999", "10-12-1999, 10/12/1999", "10:12:1999, 10/12/1999"})
     @DisplayName("returns the correct format date if possible")
-    public void dateStringFormatterTest(String input, String expectedOutput) {
+    public void dateStringTest(String input, String expectedOutput) {
         String result = EmployeeValidate.validateDateString(input);
         assertEquals(expectedOutput, result);
     }
