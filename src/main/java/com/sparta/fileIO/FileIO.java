@@ -15,9 +15,9 @@ import static com.sparta.util.Constants.LOGGER;
 
 public class FileIO {
     private static final int poolSize = 8;
-    private static final Set<Employee> uniqueEmployees = Collections.synchronizedSet(new HashSet<>());
-    private static final Set<Integer> uniqueId = Collections.synchronizedSet(new HashSet<>());
-    private static final List<Employee> duplicatesAndCorrupted = Collections.synchronizedList(new ArrayList<>());
+    private static final Set<Employee> uniqueEmployees = new HashSet<>();
+    private static final Set<Integer> uniqueId = new HashSet<>();
+    private static final List<Employee> duplicatesAndCorrupted = new ArrayList<>();
     private static final Scanner SCANNER = new Scanner(System.in);
 
     public static List<Collection<Employee>> performMultithreadedRead() {

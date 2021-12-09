@@ -12,7 +12,7 @@ public class DBAccess {
 
     private static final EmployeeDao employeeDao = new EmployeeDaoImpl();
 
-    public void readAll(){
+    public static void readAll(){
         LOGGER.info("DB read started for all data");
         long startTime = System.nanoTime();
         List <Employee> listAllEmployees = employeeDao.getAllEmployees();
@@ -20,17 +20,22 @@ public class DBAccess {
         PrintTimingData.logTimingData("DB read for all records done in: ", startTime, endTime);
     }
 
-    public void writeNonDuplicatesOnly(HashSet<Employee> toWrite) {
+    public static void writeNonDuplicatesOnly(HashSet<Employee> toWrite) {
         LOGGER.info("Starting single threaded write for: " + toWrite.size() + " records");
+        int count = 0;
         long startTime = System.nanoTime();
         for (Employee employee : toWrite) {
             employeeDao.insertEmployee(employee);
+            count++;
+            if (count % 100 == 0){
+                LOGGER.info("Records inserted so far: " + count);
+            }
         }
         long endTime = System.nanoTime();
         PrintTimingData.logTimingData("DB write for all records done in: ", startTime, endTime);
     }
 
-    public void writeAllData(HashSet<Employee> toWrite, List<Employee> duplicatesAndBad){
+    public static void writeAllData(HashSet<Employee> toWrite, List<Employee> duplicatesAndBad){
         LOGGER.info("Starting single threaded write for: " + toWrite.size() + " good records");
         long startTime = System.nanoTime();
         for (Employee employee : toWrite) {
@@ -47,7 +52,7 @@ public class DBAccess {
         PrintTimingData.logTimingData("All duplicates written in: ", startTime, endTime);
     }
 
-    public void updateRecord(Employee em){
+    public static void updateRecord(Employee em){
         LOGGER.info("Changing record at id= " + em.getId());
         long startTime = System.nanoTime();
         employeeDao.updateEmployee(em);
@@ -56,7 +61,7 @@ public class DBAccess {
     }
 
 
-    public void deleteRecord(int id){
+    public static void deleteRecord(int id){
         LOGGER.info("Deleting records for id: " + id);
         long startTime = System.nanoTime();
         employeeDao.deleteEmployee(id);
