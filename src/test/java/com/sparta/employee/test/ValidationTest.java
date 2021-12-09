@@ -1,4 +1,4 @@
-package com.sparta.example.test;
+package com.sparta.employee.test;
 
 import com.sparta.validate.EmployeeValidate;
 import org.junit.jupiter.api.DisplayName;

@@ -1,4 +1,4 @@
-package com.sparta.example.test;
+package com.sparta.employee.test;
 
 public class SampleTestClass {
 }

@@ -1,6 +1,7 @@
-package com.sparta.example;
+package com.sparta.employee;
 
-import javax.xml.transform.Result;
+import com.sparta.jdbc.StatementFactory;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -20,16 +21,16 @@ public class EmployeeDaoImpl implements EmployeeDao {
             ResultSet result = stmt.executeQuery();
             while(result.next()){
                 System.out.println("Employee{" +
-                        "id=" + id +
-                        ", namePrefix='" + namePrefix + '\'' +
-                        ", firstName='" + firstName + '\'' +
-                        ", initial=" + initial +
-                        ", lastName='" + lastName + '\'' +
-                        ", gender=" + gender +
-                        ", email='" + email + '\'' +
-                        ", dateOfBirth=" + dateOfBirth +
-                        ", dateOfJoining=" + dateOfJoining +
-                        ", salary=" + salary +
+                        "id=" + result.getInt(id) +
+                        ", namePrefix='" + result.getString(namePrefix) + '\'' +
+                        ", firstName='" + result.getString(firstName) + '\'' +
+                        ", initial=" + result.getString(initial) +
+                        ", lastName='" + result.getString(lastName) + '\'' +
+                        ", gender=" + result.getString(gender) +
+                        ", email='" + result.getString(email) + '\'' +
+                        ", dateOfBirth=" + result.getDate(dateOfBirth) +
+                        ", dateOfJoining=" + result.getString(dateOfJoining) +
+                        ", salary=" + result.getString(salary) +
                         '}');
             }
             LOGGER.info("All employees displayed!");
@@ -46,16 +47,16 @@ public class EmployeeDaoImpl implements EmployeeDao {
             stmt.setInt(1,id);
             ResultSet result = stmt.executeQuery();
             System.out.println("Employee{" +
-                    "id=" + id +
-                    ", namePrefix='" + namePrefix + '\'' +
-                    ", firstName='" + firstName + '\'' +
-                    ", initial=" + initial +
-                    ", lastName='" + lastName + '\'' +
-                    ", gender=" + gender +
-                    ", email='" + email + '\'' +
-                    ", dateOfBirth=" + dateOfBirth +
-                    ", dateOfJoining=" + dateOfJoining +
-                    ", salary=" + salary +
+                    "id=" + result.getInt(id) +
+                    ", namePrefix='" + result.getString(namePrefix) + '\'' +
+                    ", firstName='" + result.getString(firstName) + '\'' +
+                    ", initial=" + result.getString(initial) +
+                    ", lastName='" + result.getString(lastName) + '\'' +
+                    ", gender=" + result.getString(gender) +
+                    ", email='" + result.getString(email) + '\'' +
+                    ", dateOfBirth=" + result.getDate(dateOfBirth) +
+                    ", dateOfJoining=" + result.getString(dateOfJoining) +
+                    ", salary=" + result.getString(salary) +
                     '}');
             LOGGER.info("Employee found!");
         } catch (SQLException s) {
@@ -67,7 +68,6 @@ public class EmployeeDaoImpl implements EmployeeDao {
 
     @Override
     public void insertEmployee(Employee employee) {
-        //TODO implement method getInsertStatement() in statement factory
         try(PreparedStatement stmt = StatementFactory.getInsertStatement()) {
             stmt.setInt(1, employee.getId());
             stmt.setString(2,employee.getNamePrefix());
@@ -90,7 +90,7 @@ public class EmployeeDaoImpl implements EmployeeDao {
 
     @Override
     public void updateEmployee(Employee employee) {
-        
+
     }
 
     @Override
