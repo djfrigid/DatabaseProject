@@ -1,6 +1,6 @@
-package com.sparta.example;
+package com.sparta.employee;
 
-import java.util.Date;
+import java.sql.Date;
 
 public class Employee {
 
@@ -14,6 +14,10 @@ public class Employee {
     private Date dateOfBirth;
     private Date dateOfJoining;
     private int salary;
+
+    public Employee(){
+
+    }
 
     public Employee(int id, String namePrefix, String firstName, char initial, String lastName, char gender, String email, Date dateOfBirth, Date dateOfJoining, int salary) {
         this.id = id;

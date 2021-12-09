@@ -26,3 +26,4 @@ EmployeeRecords.csv
 EmployeeRecordsLarge.csv
 
 .idea/
+connection.properties

@@ -1,6 +1,6 @@
 package com.sparta.fileIO;
 
-import com.sparta.example.Employee;
+import com.sparta.employee.Employee;
 
 import com.sparta.util.DateFormatter;
 import com.sparta.util.PrintTimingData;

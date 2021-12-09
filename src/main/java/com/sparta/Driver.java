@@ -1,6 +1,6 @@
 package com.sparta;
 
-import com.sparta.example.Employee;
+import com.sparta.employee.Employee;
 import com.sparta.fileIO.FileIO;
 
 import java.util.Collection;
