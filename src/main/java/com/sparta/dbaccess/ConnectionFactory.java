@@ -10,16 +10,15 @@ import java.util.Properties;
 public class ConnectionFactory {
 
     private static Connection connection = null;
+    private static String url;
+    private static String user;
+    private static String password;
 
     public static Connection getConnection(){
         if(connection == null){
             Properties properties = new Properties();
             try {
-                properties.load(new FileReader("connection.properties"));
-                String url = properties.getProperty("dbUrl");
-                String user = properties.getProperty("dbUser");
-                String password = properties.getProperty("dbPassword");
-                connection = DriverManager.getConnection(url, user, password);
+                connection = newConnection(properties);
             } catch (IOException | SQLException e) {
                 e.printStackTrace();
             }
@@ -31,21 +30,31 @@ public class ConnectionFactory {
         if(connection != null) connection.close();
     }
 
-    public static Connection getConnectionInstance(){
+    public Connection getConnectionInstance() {
+        Connection connectionInstance = null;
         Properties properties = new Properties();
-        Connection connectionInst = null;
         try {
-            properties.load(new FileReader("connection.properties"));
-            String url = properties.getProperty("dbUrl");
-            String user = properties.getProperty("dbUser");
-            String password = properties.getProperty("dbPassword");
-            connectionInst = DriverManager.getConnection(url, user, password);
+            connectionInstance = newConnection(properties);
         } catch (IOException | SQLException e) {
             e.printStackTrace();
         }
-        return connectionInst;
+        return connectionInstance;
     }
 
+    public void closeConnectionInstance(Connection connection) throws SQLException {
+        if (connection != null) connection.close();
+    }
 
+    private static void getProperties(Properties properties) {
+        url = properties.getProperty("dbUrl");
+        user = properties.getProperty("dbUser");
+        password = properties.getProperty("dbPassword");
+    }
+
+    private static Connection newConnection(Properties properties) throws IOException, SQLException {
+        properties.load(new FileReader("connection.properties"));
+        getProperties(properties);
+        return DriverManager.getConnection(url, user, password);
+    }
 
 }

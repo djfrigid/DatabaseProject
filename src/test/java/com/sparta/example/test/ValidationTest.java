@@ -136,7 +136,7 @@ public class ValidationTest {
         assertNull(result);
     }
 
-    //Dates
+    //Date FORMATTER - KONRAD
     @ParameterizedTest
     @CsvSource({"10/12/1999, 1999-10-12", "05/25/2000, 2000-05-25"})
     @DisplayName("returns the date in the correct SQL format if valid")
@@ -146,6 +146,15 @@ public class ValidationTest {
         assertTrue(result.compareTo(expectedDate) == 0);
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"35/12/1999"})
+    @DisplayName("returns the date in the correct SQL format if valid")
+    public void invalidDateFormatterTest(String input) {
+        String result = DateFormatter.formatDate(input);
+        assertNull(result);
+    }
+
+    //Date VALIDATION
     @ParameterizedTest
     @ValueSource(strings = {"1995-05-25", "2000-05-25", "1954-04-21", "2003-12-09"})
     @DisplayName("returns the dob if employee age => 18")
