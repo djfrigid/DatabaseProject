@@ -30,7 +30,7 @@ public class ConnectionFactory {
         if(connection != null) connection.close();
     }
 
-    public Connection getConnectionInstance() {
+    public static Connection getConnectionInstance() {
         Connection connectionInstance = null;
         Properties properties = new Properties();
         try {
@@ -41,7 +41,7 @@ public class ConnectionFactory {
         return connectionInstance;
     }
 
-    public void closeConnectionInstance(Connection connection) throws SQLException {
+    public static void closeConnectionInstance(Connection connection) throws SQLException {
         if (connection != null) connection.close();
     }
 

@@ -121,7 +121,7 @@ public class ValidationTest {
 
     //ID
     @ParameterizedTest
-    @ValueSource(strings = {"232332", "000001", "999999"})
+    @ValueSource(strings = {"000001", "999999", "1", "22", "333", "4444", "555555"})
     @DisplayName("returns salary if the salary is valid.")
     public void validIDTest(String input) {
         String result = EmployeeValidate.validateId(input);
@@ -129,7 +129,7 @@ public class ValidationTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"?????", "1000111", "1", "1w", "22", "323", "3323", "44444", "99999w"})
+    @ValueSource(strings = {"?????", "1000111", "1w", "99999w"})
     @DisplayName("returns null if the ID is invalid")
     public void invalidIDTest(String input) {
         String result = EmployeeValidate.validateId(input);
