@@ -14,8 +14,8 @@ public class EmployeeValidate {
     private static String prefixRegex = "^[A-Za-z]{2,4}[.]?$";
     private static String idRegex = "^[0-9]{6}";
     private static String salaryRegex = "[0-9]{4,8}";
-    private static String dateRegex = "^(0[1-9]|1[0-2])\\/(0[1-9]|[12][0-9]|3[01])\\/[0-9][4]$";
-    private static String validDateRegex = "^(0[1-9]|1[0-2])(0[1-9]|[12][0-9]|3[01])[0-9][4]$";
+    private static String dateRegex = "^([0-1][0-9])[\\/]([0-3][0-9])[\\/]([0-9]{4})";
+    private static String validDateRegex = "^[0-1][0-9][0-3][0-9][0-9]{4}";
     private static Pattern emailPattern = Pattern.compile(emailRegex);
     private static Pattern namePattern = Pattern.compile(nameRegex);
     private static Pattern idPattern = Pattern.compile(idRegex);
@@ -111,22 +111,16 @@ public class EmployeeValidate {
         return null;
     }
 
-    /*
-    TODO - Validate DOB and DOJ
-    - Take sql.Date inputs, or strings
-    - Make sure DOB is within 80/90/100 years
-     */
-
     public static String validateDateString(String date) {
         if(matches(datePattern, date)) {
             return date;
         }
 
-        String dummy = date.replaceAll("[^[-:;]]", "");
+        String dummy = date.replaceAll("[-:;]", "");
         if(matches(validateDatePattern, dummy)){
             StringBuilder returnDate = new StringBuilder(dummy);
+            returnDate.insert(2, '/');
             returnDate.insert(5, '/');
-            returnDate.insert(8, '/');
             return returnDate.toString();
         }
 
@@ -143,5 +137,6 @@ public class EmployeeValidate {
 
         return null;
     }
+
 
 }
