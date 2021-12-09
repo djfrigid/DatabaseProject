@@ -27,7 +27,7 @@ public class FileIO {
     public static List<Collection<Employee>> performMultithreadedRead() {
         BlockingQueue<String> queue = new ArrayBlockingQueue<>(256);
         // Thread Safe Queue to be shared amongst all threads
-        Path filename = Path.of("EmployeeRecordsLarge.csv");
+        Path filename = Path.of("EmployeeRecords.csv");
         // Thread pool of fixed size, to be used for parsing Employee lines
         ExecutorService pool = Executors.newFixedThreadPool(poolSize);
         // Create Parser threads and put them in the pool
@@ -164,9 +164,9 @@ class EmployeeParser implements Runnable{
         String lastName = EmployeeValidate.validateName(components[4]);
         char gender = EmployeeValidate.validateGender(components[5].charAt(0));
         String email = EmployeeValidate.validateEmail(components[6]);
-        java.sql.Date dateOfBirth = java.sql.Date.valueOf(DateFormatter.formatDate(components[7]));
-        java.sql.Date dateOfJoining = java.sql.Date.valueOf(DateFormatter.formatDate(components[8]));
-        return new Employee(id, namePrefix, firstName, initial, lastName, gender, email, dateOfBirth, dateOfJoining, salary);
+        java.sql.Date dateOfBirth = DateFormatter.formatDate(components[7]);
+        java.sql.Date dateOfJoining = DateFormatter.formatDate(components[8]);
+        return new Employee(id, namePrefix, firstName, initial, lastName, gender, email, null, null, salary);
     }
 
     @Override
@@ -189,5 +189,4 @@ class EmployeeParser implements Runnable{
             FileIO.insertEmployee(newEmployee);
         }
     }
-
 }

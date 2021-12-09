@@ -121,7 +121,7 @@ public class ValidationTest {
 
     //ID
     @ParameterizedTest
-    @ValueSource(strings = {"232332", "000001", "999999"})
+    @ValueSource(strings = {"000001", "999999", "1", "22", "333", "4444", "555555"})
     @DisplayName("returns salary if the salary is valid.")
     public void validIDTest(String input) {
         String result = EmployeeValidate.validateId(input);
@@ -129,7 +129,7 @@ public class ValidationTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"?????", "1000111", "1", "1w", "22", "323", "3323", "44444", "99999w"})
+    @ValueSource(strings = {"?????", "1000111", "1w", "99999w"})
     @DisplayName("returns null if the ID is invalid")
     public void invalidIDTest(String input) {
         String result = EmployeeValidate.validateId(input);
@@ -141,7 +141,7 @@ public class ValidationTest {
     @CsvSource({"10/12/1999, 1999-10-12", "05/25/2000, 2000-05-25"})
     @DisplayName("returns the date in the correct SQL format if valid")
     public void dateFormatterTest(String input, String expectedOutput) {
-        Date result = java.sql.Date.valueOf(DateFormatter.formatDate(input));
+        Date result = DateFormatter.formatDate(input);
         Date expectedDate = java.sql.Date.valueOf((expectedOutput));
         assertTrue(result.compareTo(expectedDate) == 0);
     }
@@ -150,7 +150,7 @@ public class ValidationTest {
     @ValueSource(strings = {"35/12/1999"})
     @DisplayName("returns the date in the correct SQL format if valid")
     public void invalidDateFormatterTest(String input) {
-        String result = DateFormatter.formatDate(input);
+        Date result = DateFormatter.formatDate(input);
         assertNull(result);
     }
 
