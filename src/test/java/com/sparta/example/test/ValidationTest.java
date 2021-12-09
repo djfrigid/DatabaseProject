@@ -150,7 +150,7 @@ public class ValidationTest {
     @ValueSource(strings = {"35/12/1999"})
     @DisplayName("returns the date in the correct SQL format if valid")
     public void invalidDateFormatterTest(String input) {
-        Date result = java.sql.Date.valueOf(DateFormatter.formatDate(input));
+        String result = DateFormatter.formatDate(input);
         assertNull(result);
     }
 

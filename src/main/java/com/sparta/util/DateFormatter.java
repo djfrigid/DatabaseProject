@@ -10,6 +10,9 @@ public class DateFormatter {
     private static final SimpleDateFormat outSDF = new SimpleDateFormat("yyyy-MM-dd");
 
     public static String formatDate(String inDate) {
+        if(!inDate.matches("^[0-1][0-9][0-3][0-9][0-9]{4}")){
+            return null;
+        }
         String outDate = "";
         if (inDate != null) {
             try {
