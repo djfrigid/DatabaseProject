@@ -1,7 +1,11 @@
 package com.sparta.validate;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.sql.Date;
 
 public class EmployeeValidate {
     private static String emailRegex = "^[a-zA-Z0-9_!#$%&’*+=?`{|}~^.-]+@" +
@@ -10,11 +14,17 @@ public class EmployeeValidate {
     private static String prefixRegex = "^[A-Za-z]{2,4}[.]?$";
     private static String idRegex = "^[0-9]{1,6}";
     private static String salaryRegex = "[0-9]{4,8}";
+    private static String dateRegex = "^(0[1-9]|1[0-2])\\/(0[1-9]|[12][0-9]|3[01])\\/[0-9][4]$";
+    private static String validDateRegex = "^(0[1-9]|1[0-2])(0[1-9]|[12][0-9]|3[01])[0-9][4]$";
     private static Pattern emailPattern = Pattern.compile(emailRegex);
     private static Pattern namePattern = Pattern.compile(nameRegex);
-    private static Pattern prefixPattern = Pattern.compile(prefixRegex);
     private static Pattern idPattern = Pattern.compile(idRegex);
     private static Pattern salaryPattern = Pattern.compile(salaryRegex);
+    private static Pattern datePattern = Pattern.compile(dateRegex);
+    private static Pattern validateDatePattern = Pattern.compile(validDateRegex);
+    private static String[] namePrefixes = {"mr.", "mrs.", "miss.", "ms.", "dr.", "drs.", "hon.", "prof."};
+    public static final int MILLISECONDSINDAY = 86400000;
+    public static final double DAYSINYEAR = 365.2425;
 
     // Method to check string satisfies regular expression
     private static boolean matches(Pattern pattern, String employeeDetail) {
@@ -73,16 +83,18 @@ public class EmployeeValidate {
         return null;
     }
 
-    public static String validateNamePrefix(String title) {
-        if (matches(prefixPattern, title)) {
-            StringBuilder formattedTitle = new StringBuilder();
-            formattedTitle.append(title.substring(0,1).toUpperCase() + title.substring(1).toLowerCase());
-            if (formattedTitle.charAt(formattedTitle.length() - 1) != '.') {
-                formattedTitle.append(".");
-            }
-            return formattedTitle.toString();
+    public static String validateNamePrefix(String prefix) {
+        String returnPrefix = null;
+        StringBuilder prefixFormat = new StringBuilder(prefix.toLowerCase());
+        if (prefix.charAt(prefix.length() - 1) != '.') {
+            prefixFormat.append(".");
         }
-        return null;
+
+        if (Arrays.asList(namePrefixes).contains(prefixFormat.toString())) {
+            returnPrefix = prefixFormat.substring(0,1).toUpperCase() + prefixFormat.substring(1);
+        }
+
+        return returnPrefix;
     }
 
     public static String validateId(String idNumber) {
@@ -98,4 +110,38 @@ public class EmployeeValidate {
         }
         return null;
     }
+
+    /*
+    TODO - Validate DOB and DOJ
+    - Take sql.Date inputs, or strings
+    - Make sure DOB is within 80/90/100 years
+     */
+
+    public static String validateDateString(String date) {
+        if(matches(datePattern, date)) {
+            return date;
+        }
+
+        String dummy = date.replaceAll("[^[-:;]]", "");
+        if(matches(validateDatePattern, dummy)){
+            StringBuilder returnDate = new StringBuilder(dummy);
+            returnDate.insert(5, '/');
+            returnDate.insert(8, '/');
+            return returnDate.toString();
+        }
+
+        return null;
+    }
+
+    public static Date validateAge(Date dob) {
+        Date currentDate = new Date(System.currentTimeMillis());
+        double yearsDiff = (currentDate.getTime()/MILLISECONDSINDAY - dob.getTime()/MILLISECONDSINDAY)/DAYSINYEAR;
+
+        if (yearsDiff >= 18) {
+            return dob;
+        }
+
+        return null;
+    }
+
 }

@@ -2,6 +2,7 @@ package com.sparta.util;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import static com.sparta.util.Constants.LOGGER;
 
 public class DateFormatter {
 
@@ -16,6 +17,7 @@ public class DateFormatter {
                 outDate = outSDF.format(date);
             } catch (ParseException ex){
                 outDate=null;
+                LOGGER.warn("Wrong date format");
             }
         }
         return outDate;
