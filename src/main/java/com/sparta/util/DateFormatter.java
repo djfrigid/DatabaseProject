@@ -15,7 +15,7 @@ public class DateFormatter {
                 java.util.Date date = inSDF.parse(inDate);
                 outDate = outSDF.format(date);
             } catch (ParseException ex){
-                ex.printStackTrace();
+                outDate=null;
             }
         }
         return outDate;

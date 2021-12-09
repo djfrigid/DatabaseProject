@@ -8,7 +8,7 @@ public class EmployeeValidate {
             "[a-zA-Z0-9]+[.][a-zA-Z0-9]{2,3}(?:[.][a-zA-Z0-9]{2,3})?$";
     private static String nameRegex = "^[A-Za-z]{2,}(?:-[A-Za-z]{2,})?$";
     private static String prefixRegex = "^[A-Za-z]{2,4}[.]?$";
-    private static String idRegex = "^[0-9]{6}";
+    private static String idRegex = "^[0-9]{1,6}";
     private static String salaryRegex = "[0-9]{4,8}";
     private static Pattern emailPattern = Pattern.compile(emailRegex);
     private static Pattern namePattern = Pattern.compile(nameRegex);
