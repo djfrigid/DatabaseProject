@@ -14,7 +14,7 @@ public class EmployeeValidate {
     private static String prefixRegex = "^[A-Za-z]{2,4}[.]?$";
     private static String idRegex = "^[0-9]{6}";
     private static String salaryRegex = "[0-9]{4,8}";
-    private static String dateRegex = "^(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])/[0-9][4]$";
+    private static String dateRegex = "^(0[1-9]|1[0-2])\\/(0[1-9]|[12][0-9]|3[01])\\/[0-9][4]$";
     private static String validDateRegex = "^(0[1-9]|1[0-2])(0[1-9]|[12][0-9]|3[01])[0-9][4]$";
     private static Pattern emailPattern = Pattern.compile(emailRegex);
     private static Pattern namePattern = Pattern.compile(nameRegex);
@@ -24,7 +24,7 @@ public class EmployeeValidate {
     private static Pattern validateDatePattern = Pattern.compile(validDateRegex);
     private static String[] namePrefixes = {"mr.", "mrs.", "miss.", "ms.", "dr.", "drs.", "hon.", "prof."};
     public static final int MILLISECONDSINDAY = 86400000;
-    public static final int DAYSINYEAR = 365;
+    public static final double DAYSINYEAR = 365.2425;
 
     // Method to check string satisfies regular expression
     private static boolean matches(Pattern pattern, String employeeDetail) {
@@ -122,11 +122,11 @@ public class EmployeeValidate {
             return date;
         }
 
-        String dummy = date.replaceAll("[^[/:;]]", "");
+        String dummy = date.replaceAll("[^[-:;]]", "");
         if(matches(validateDatePattern, dummy)){
             StringBuilder returnDate = new StringBuilder(dummy);
-            returnDate.insert(5, '-');
-            returnDate.insert(8, '-');
+            returnDate.insert(5, '/');
+            returnDate.insert(8, '/');
             return returnDate.toString();
         }
 
@@ -135,7 +135,7 @@ public class EmployeeValidate {
 
     public static Date validateAge(Date dob) {
         Date currentDate = new Date(System.currentTimeMillis());
-        long yearsDiff = (currentDate.getTime()/MILLISECONDSINDAY - dob.getTime()/MILLISECONDSINDAY)/DAYSINYEAR;
+        double yearsDiff = (currentDate.getTime()/MILLISECONDSINDAY - dob.getTime()/MILLISECONDSINDAY)/DAYSINYEAR;
 
         if (yearsDiff >= 18) {
             return dob;
