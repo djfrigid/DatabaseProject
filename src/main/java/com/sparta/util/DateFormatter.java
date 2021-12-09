@@ -10,10 +10,10 @@ public class DateFormatter {
 
     private static final SimpleDateFormat inSDF = new SimpleDateFormat("MM/dd/yyyy");
     private static final SimpleDateFormat outSDF = new SimpleDateFormat("yyyy-MM-dd");
-
     public static java.sql.Date formatDate(String inDate) {
 
         inDate = EmployeeValidate.validateDateString(inDate);
+
         String outDate = "";
         if (inDate != null) {
             try {
