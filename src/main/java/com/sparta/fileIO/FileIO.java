@@ -15,19 +15,19 @@ import static com.sparta.util.Constants.LOGGER;
 
 public class FileIO {
     private static final int poolSize = 8;
-    private static final HashSet<Employee> uniqueEmployees = new HashSet<>();
-    private static final HashSet<Integer> uniqueId = new HashSet<>();
-    private static final List<Employee> duplicatesAndCorrupted = new ArrayList<>();
+    private static final Set<Employee> uniqueEmployees = Collections.synchronizedSet(new HashSet<>());
+    private static final Set<Integer> uniqueId = Collections.synchronizedSet(new HashSet<>());
+    private static final List<Employee> duplicatesAndCorrupted = Collections.synchronizedList(new ArrayList<>());
     private static final Scanner SCANNER = new Scanner(System.in);
 
     public static List<Collection<Employee>> performMultithreadedRead() {
-        BlockingQueue<String> queue = new ArrayBlockingQueue<>(256);
+        BlockingQueue<String> queue = new LinkedBlockingQueue<>();
         // Thread Safe Queue to be shared amongst all threads
-        Path filename = Path.of("EmployeeRecords.csv");
+        Path filename = Path.of("EmployeeRecordsLarge.csv");
         // Thread pool of fixed size, to be used for parsing Employee lines
         ExecutorService pool = Executors.newFixedThreadPool(poolSize);
         // Create Parser threads and put them in the pool
-        for (int i = 0 ; i < poolSize - 1 ; i++){
+        for (int i = 0 ; i < poolSize -1; i++){
             pool.submit(new EmployeeParser(queue));
         }
         // Try to read the file, shutting the thread when done, then block until no items left in queue
@@ -42,10 +42,13 @@ public class FileIO {
                 endTime = System.nanoTime();
                 LOGGER.info("Parsing threads now finished");
                 PrintTimingData.logTimingData("Parsing done in: ", startTime, endTime);
+            } else{
+                LOGGER.warn("Spatula");
             }
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
+        pool.shutdownNow();
         List<Collection<Employee>> collections = new ArrayList<>(2);
         collections.add(uniqueEmployees);
         collections.add(duplicatesAndCorrupted);
@@ -96,7 +99,7 @@ public class FileIO {
         return accessPath;
     }
 
-    public static synchronized void insertEmployee(Employee x){
+    public static void insertEmployee(Employee x){
         if (uniqueId.contains(x.getId())){
             duplicatesAndCorrupted.add((x));
         }
@@ -126,8 +129,10 @@ class FileReaderClass implements Runnable{
             while((nextLine = reader.readLine()) != null){
                 queue.put(nextLine);
                 count++;
+                if (count % 100000 == 0)
+                    LOGGER.info("Items added to queue are: " + count);
             }
-            LOGGER.info("Items added to queue are: " + count);
+
         } catch (IOException | InterruptedException e){
             LOGGER.warn("Exception occurred");
         }

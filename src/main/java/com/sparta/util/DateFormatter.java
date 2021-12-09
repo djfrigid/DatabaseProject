@@ -16,8 +16,8 @@ public class DateFormatter {
                 java.util.Date date = inSDF.parse(inDate);
                 outDate = outSDF.format(date);
             } catch (ParseException ex){
+                outDate=null;
                 LOGGER.warn("Wrong date format");
-                return null;
             }
         }
         return outDate;
