@@ -11,33 +11,30 @@ import java.util.concurrent.*;
 import static com.sparta.util.Constants.LOGGER;
 
 public class MultithreadedDBWrites {
-    private static final int poolSize = 8;
+    private static final int poolSize = 16;
 
     public static void writeNonDuplicatesOnly(Set<Employee> toWrite){
         ExecutorService pool = Executors.newFixedThreadPool(poolSize);
-        List<List<Employee>> masterList = splitEmployeeSetForMT(toWrite);
+        // List<List<Employee>> masterList = splitEmployeeSetForMT(toWrite);
+        BlockingQueue<Employee> employeeBlockingQueue = new ArrayBlockingQueue<>(toWrite.size());
+        employeeBlockingQueue.addAll(toWrite);
         for (int i = 0 ; i < poolSize ; i++){
-            System.out.println("Chunk " + i + " is this many big: " + masterList.get(i).size());
-            submitToPool(pool, masterList.get(i));
+            submitToPool(pool, employeeBlockingQueue);
         }
-        System.exit(0);
         try{
             long startTime = System.nanoTime();
             if (pool.awaitTermination(10, TimeUnit.SECONDS)){
                 long endTime = System.nanoTime();
                 PrintTimingData.logTimingData("Writing done in: ", startTime, endTime);
-            } else {
-                LOGGER.info("");
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         pool.shutdownNow();
-        LOGGER.info("P");
     }
 
-    public static void submitToPool(ExecutorService pool, List<Employee> chunk){
-        pool.submit(new DBWriter(chunk));
+    private static void submitToPool(ExecutorService pool, BlockingQueue<Employee> employeeBlockingQueue){
+        pool.submit(new DBWriter(employeeBlockingQueue));
     }
 
     public static List<List<Employee>> splitEmployeeSetForMT(Set<Employee> toWrite){
@@ -51,7 +48,10 @@ public class MultithreadedDBWrites {
             List<Employee> chunk = autoChunkableListEmployees.subList(chunkSize*i, chunkSize*(i+1));
             chunks.add(chunk);
         }
-        chunks.get(chunks.size()-1).addAll(leftovers);
+        List<Employee> test = chunks.get(chunks.size()-1);
+        test.addAll(leftovers);
+        chunks.remove(chunks.size()-1);
+        chunks.add(test);
        // List<Employee> splitOne = listEmployees.subList(0, listEmployees.size()/2);
         //List<Employee> splitTwo = listEmployees.subList(listEmployees.size()/2, listEmployees.size());
         return chunks;
@@ -59,22 +59,21 @@ public class MultithreadedDBWrites {
 }
 
 class DBWriter implements Runnable{
-    private final List<Employee> chunk;
-    private final EmployeeDao employeeDao = new EmployeeDaoImpl();
-    private int count = 0;
-
-    public DBWriter(List<Employee> chunk){
+    private final BlockingQueue<Employee> chunk;
+    public DBWriter(BlockingQueue<Employee> chunk){
         this.chunk = chunk;
     }
 
     @Override
     public void run() {
-        Employee theEmployee;
-        for (Employee e: chunk){
-            employeeDao.insertEmployee(e);
-            count++;
-            if (count % 100 == 0){
-                LOGGER.info("Records inserted so far: " + count);
+        EmployeeDao employeeDao = new EmployeeDaoImpl();
+        int count = 0;
+        Employee employee;
+        while((employee = chunk.poll()) != null){
+            count+=1;
+            employeeDao.insertEmployee(employee);
+            if (count % 1000 == 0){
+                LOGGER.info("Thread " + Thread.currentThread().getId() + " has inserted " + count + " records");
             }
         }
     }

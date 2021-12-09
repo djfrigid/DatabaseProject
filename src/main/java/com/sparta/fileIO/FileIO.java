@@ -5,13 +5,9 @@ import com.sparta.employee.Employee;
 import com.sparta.util.DateFormatter;
 import com.sparta.util.PrintTimingData;
 import com.sparta.validate.EmployeeValidate;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.nio.file.Path;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.*;
 
