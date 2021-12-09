@@ -141,7 +141,7 @@ public class ValidationTest {
     @CsvSource({"10/12/1999, 1999-10-12", "05/25/2000, 2000-05-25"})
     @DisplayName("returns the date in the correct SQL format if valid")
     public void dateFormatterTest(String input, String expectedOutput) {
-        Date result = java.sql.Date.valueOf(DateFormatter.formatDate(input));
+        Date result = DateFormatter.formatDate(input);
         Date expectedDate = java.sql.Date.valueOf((expectedOutput));
         assertTrue(result.compareTo(expectedDate) == 0);
     }
@@ -150,7 +150,7 @@ public class ValidationTest {
     @ValueSource(strings = {"35/12/1999"})
     @DisplayName("returns the date in the correct SQL format if valid")
     public void invalidDateFormatterTest(String input) {
-        String result = DateFormatter.formatDate(input);
+        Date result = DateFormatter.formatDate(input);
         assertNull(result);
     }
 

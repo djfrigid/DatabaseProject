@@ -11,20 +11,23 @@ public class DateFormatter {
     private static final SimpleDateFormat inSDF = new SimpleDateFormat("MM/dd/yyyy");
     private static final SimpleDateFormat outSDF = new SimpleDateFormat("yyyy-MM-dd");
 
-    public static String formatDate(String inDate) {
-        inDate = EmployeeValidate.validateDateString(inDate);
+    public static java.sql.Date formatDate(String inDate) {
 
-        String outDate = null;
+        inDate = EmployeeValidate.validateDateString(inDate);
+        String outDate = "";
         if (inDate != null) {
             try {
                 java.util.Date date = inSDF.parse(inDate);
                 outDate = outSDF.format(date);
             } catch (ParseException ex){
-                LOGGER.warn("Wrong date format");
-            } finally {
-                return outDate;
+                return null;
             }
         }
-        return inDate;
+        if(outDate.equals("")){
+            return null;
+        } else {
+            return java.sql.Date.valueOf(outDate);
+        }
     }
+
 }
