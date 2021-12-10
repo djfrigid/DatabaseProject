@@ -63,7 +63,8 @@ public class EmployeeDaoImpl implements EmployeeDao {
     @Override
     public List<Employee> getAllEmployees() {
         List<Employee> listAllEmployees = new ArrayList<>();
-        try(PreparedStatement stmt = StatementFactory.getAllEmployees()) {
+        try {
+            PreparedStatement stmt = StatementFactory.getAllEmployees();
             ResultSet result = stmt.executeQuery();
             while(result.next()){
                 listAllEmployees.add( new Employee(result.getInt("id"),
@@ -84,7 +85,8 @@ public class EmployeeDaoImpl implements EmployeeDao {
     @Override
     public Employee getEmployee(Integer id) {
         Employee employee = new Employee();
-        try(PreparedStatement stmt = StatementFactory.getOneEmployee()){
+        try{
+            PreparedStatement stmt = StatementFactory.getOneEmployee();
             stmt.setInt(1,id);
             ResultSet result = stmt.executeQuery();
             if(result.next()){
@@ -127,7 +129,8 @@ public class EmployeeDaoImpl implements EmployeeDao {
 
     @Override
     public void updateEmployee(Employee employee) {
-        try (PreparedStatement stmt = StatementFactory.getUpdateAnEmployee()){
+        try {
+            PreparedStatement stmt = StatementFactory.getUpdateAnEmployee();
             stmt.setString(1, employee.getNamePrefix());
             stmt.setString(2, employee.getFirstName());
             stmt.setString(3, String.valueOf(employee.getInitial()));
@@ -148,7 +151,8 @@ public class EmployeeDaoImpl implements EmployeeDao {
 
     @Override
     public void deleteEmployee(int id) {
-        try (PreparedStatement stmt = StatementFactory.getDeleteEmployee()){
+        try {
+            PreparedStatement stmt = StatementFactory.getDeleteEmployee();
             stmt.setInt(1, id);
             int rowAffected = stmt.executeUpdate();
             LOGGER.info("Records deleted: " + rowAffected);
