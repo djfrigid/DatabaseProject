@@ -27,26 +27,24 @@ public class FileIO {
         // Path filename = takeUserInput();
         // Thread pool of fixed size, to be used for parsing Employee lines
         ExecutorService pool = Executors.newFixedThreadPool(poolSize);
+        List<Future<?>> areDone = new ArrayList<>(poolSize);
         // Create Parser threads and put them in the pool
         for (int i = 0 ; i < poolSize - 1 ; i++){
-            pool.submit(new EmployeeParser(queue));
+            areDone.add(pool.submit(new EmployeeParser(queue)));
         }
-        // Try to read the file, shutting the thread when done, then block until no items left in queue
-        try {
-            long startTime = System.nanoTime();
-            pool.submit(new FileReaderClass(queue, filename)).get();
-            pool.shutdownNow();
-            long endTime = System.nanoTime();
-            PrintTimingData.logTimingData("File read done in: ", startTime, endTime);
-            startTime = System.nanoTime();
-            if (pool.awaitTermination(10, TimeUnit.SECONDS)){
-                endTime = System.nanoTime();
-                LOGGER.info("Parsing threads now finished");
-                PrintTimingData.logTimingData("Parsing done in: ", startTime, endTime);
+        areDone.add(pool.submit(new FileReaderClass(queue, filename)));
+        pool.shutdown();
+        LOGGER.info("Tasks submitted to pool. Awaiting completion of process.");
+        long startTime = System.nanoTime();
+        for (Future<?> future: areDone){
+            try {
+                future.get();
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
             }
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
         }
+        long endTime = System.nanoTime();
+        PrintTimingData.logTimingData("Reading and parsing done in: ", startTime, endTime);
         List<Collection<Employee>> collections = new ArrayList<>(2);
         collections.add(uniqueEmployees);
         collections.add(duplicatesAndCorrupted);
@@ -170,17 +168,7 @@ class EmployeeParser implements Runnable{
     public void run() {
         String line;
         Employee newEmployee;
-        // While still reading from the file, run indefinitely. Once reading is over, catch the exception and break the loop
-        // Once loop broken, empty queue then shut down.
-        while (true){
-            try{
-                line = queue.take();
-                newEmployee = parseData(line.split(","));
-                FileIO.insertEmployee(newEmployee);
-            } catch (InterruptedException e) {
-                break;
-            }
-        }
+        LOGGER.info("Thread " + Thread.currentThread().getId() + " beginning parsing process.");
         while ((line = queue.poll()) != null){
             newEmployee = parseData(line.split(","));
             FileIO.insertEmployee(newEmployee);
