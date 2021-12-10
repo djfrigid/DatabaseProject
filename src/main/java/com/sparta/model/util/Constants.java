@@ -8,12 +8,15 @@ import org.apache.logging.log4j.Logger;
 import java.util.regex.Pattern;
 
 public class Constants {
+    // Logger
     public static final Logger LOGGER = LogManager.getLogger("Data handling app");
     public static final EmployeeDao EMPLOYEE_DAO = new EmployeeDaoImpl();
-    // Time Constants
+    // Value Constants
     public static final int MILLISECONDS_IN_DAY = 86400000;
     public static final double DAYS_IN_YEAR = 365.2425;
     public static final int EIGHTEEN = 18;
+    public static final char M = 'M';
+    public static final char F = 'F';
     // Invalid returns
     public static final String INVALID_STR = "INVALID";
     public static final char INVALID_CHAR = '\0';

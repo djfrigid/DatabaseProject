@@ -9,7 +9,8 @@ import java.sql.Date;
 import static com.sparta.model.util.Constants.MILLISECONDS_IN_DAY;
 import static com.sparta.model.util.Constants.DAYS_IN_YEAR;
 import static com.sparta.model.util.Constants.EIGHTEEN;
-
+import static com.sparta.model.util.Constants.M;
+import static com.sparta.model.util.Constants.F;
 
 import static com.sparta.model.util.Constants.INVALID_STR;
 import static com.sparta.model.util.Constants.INVALID_CHAR;
@@ -42,8 +43,8 @@ public class EmployeeValidate {
 
     // Gender validation
     public static char validateGender(char gender) {
-        if (Character.toUpperCase(gender) == 'M' ||
-        Character.toUpperCase(gender) == 'F') {
+        if (Character.toUpperCase(gender) == M ||
+        Character.toUpperCase(gender) == F) {
             return Character.toUpperCase(gender);
         }
 
