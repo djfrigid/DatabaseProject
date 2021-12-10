@@ -65,7 +65,7 @@ public class ValidationTests {
     @DisplayName("returns null if the email is invalid.")
     public void invalidEmailTest(String input) {
         String result = EmployeeValidate.validateEmail(input);
-        assertNull(result);
+        assertEquals("INVALID", result);
     }
 
     //Names
@@ -82,7 +82,7 @@ public class ValidationTests {
     @DisplayName("returns null if the name is invalid. (checks for case sensitive)")
     public void invalidNameTest(String input) {
         String result = EmployeeValidate.validateName(input);
-        assertNull(result);
+        assertEquals("INVALID", result);
     }
 
     //Prefix
@@ -99,7 +99,7 @@ public class ValidationTests {
     @DisplayName("returns null if the prefix is invalid.")
     public void invalidPrefixTest(String input) {
         String result = EmployeeValidate.validateNamePrefix(input);
-        assertNull(result);
+        assertEquals("INVALID", result);
     }
 
     //Salary
@@ -116,13 +116,13 @@ public class ValidationTests {
     @DisplayName("returns null if the salary is invalid")
     public void invalidSalaryTest(String input) {
         String result = EmployeeValidate.validateSalary(input);
-        assertNull(result);
+        assertEquals("-1", result);
     }
 
     //ID
     @ParameterizedTest
     @ValueSource(strings = {"000001", "999999", "1", "22", "333", "4444", "555555"})
-    @DisplayName("returns salary if the salary is valid.")
+    @DisplayName("returns id if the id is valid.")
     public void validIDTest(String input) {
         String result = EmployeeValidate.validateId(input);
         assertEquals(input, result);
@@ -133,7 +133,7 @@ public class ValidationTests {
     @DisplayName("returns null if the ID is invalid")
     public void invalidIDTest(String input) {
         String result = EmployeeValidate.validateId(input);
-        assertNull(result);
+        assertEquals("-1", result);
     }
 
     //Date FORMATTER - KONRAD
