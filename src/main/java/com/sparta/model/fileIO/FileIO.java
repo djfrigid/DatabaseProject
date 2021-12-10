@@ -1,17 +1,17 @@
-package com.sparta.fileIO;
+package com.sparta.model.fileIO;
 
-import com.sparta.employee.Employee;
+import com.sparta.model.employee.Employee;
 
-import com.sparta.util.DateFormatter;
-import com.sparta.util.PrintTimingData;
-import com.sparta.validate.EmployeeValidate;
+import com.sparta.model.util.DateFormatter;
+import com.sparta.model.util.PrintTimingData;
+import com.sparta.model.validate.EmployeeValidate;
 
 import java.io.*;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.*;
 
-import static com.sparta.util.Constants.LOGGER;
+import static com.sparta.model.util.Constants.LOGGER;
 
 public class FileIO {
     private static final int poolSize = 8;
@@ -160,9 +160,9 @@ class EmployeeParser implements Runnable{
         String lastName = EmployeeValidate.validateName(components[4]);
         char gender = EmployeeValidate.validateGender(components[5].charAt(0));
         String email = EmployeeValidate.validateEmail(components[6]);
-        java.sql.Date dateOfBirth = java.sql.Date.valueOf(DateFormatter.formatDate(components[7]));
-        java.sql.Date dateOfJoining = java.sql.Date.valueOf(DateFormatter.formatDate(components[8]));
-        return new Employee(id, namePrefix, firstName, initial, lastName, gender, email, dateOfBirth, dateOfJoining, salary);
+        java.sql.Date dateOfBirth = DateFormatter.formatDate(components[7]);
+        java.sql.Date dateOfJoining = DateFormatter.formatDate(components[8]);
+        return new Employee(id, namePrefix, firstName, initial, lastName, gender, email, null, null, salary);
     }
 
     @Override
@@ -185,5 +185,4 @@ class EmployeeParser implements Runnable{
             FileIO.insertEmployee(newEmployee);
         }
     }
-
 }

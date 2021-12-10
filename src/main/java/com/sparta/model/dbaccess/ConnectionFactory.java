@@ -1,4 +1,4 @@
-package com.sparta.dbaccess;
+package com.sparta.model.dbaccess;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -41,7 +41,7 @@ public class ConnectionFactory {
         return connectionInstance;
     }
 
-    public void closeConnectionInstance(Connection connection) throws SQLException {
+    public static void closeConnectionInstance(Connection connection) throws SQLException {
         if (connection != null) connection.close();
     }
 

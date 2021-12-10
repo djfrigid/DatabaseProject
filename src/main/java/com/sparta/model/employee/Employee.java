@@ -1,4 +1,4 @@
-package com.sparta.employee;
+package com.sparta.model.employee;
 
 import java.sql.Date;
 
