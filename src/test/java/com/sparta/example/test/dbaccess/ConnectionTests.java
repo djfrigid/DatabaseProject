@@ -2,19 +2,12 @@ package com.sparta.example.test.dbaccess;
 
 import com.sparta.dbaccess.ConnectionFactory;
 import com.sparta.dbaccess.StatementFactory;
-import com.sparta.util.DateFormatter;
-import com.sparta.validate.EmployeeValidate;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -27,6 +20,7 @@ public class ConnectionTests {
         connection = ConnectionFactory.getConnection();
     }
 
+    //Connections Open & Close
     @Test
     @DisplayName("returns true if connection has been created")
     public void getConnectionTest() throws SQLException {
@@ -40,6 +34,7 @@ public class ConnectionTests {
         assertTrue(connection.isClosed());
     }
 
+    //Statements
     @Test
     @DisplayName("returns true if getAllEmployees has been closed")
     public void getAllEmployeesCloseTest() throws SQLException, IOException {
