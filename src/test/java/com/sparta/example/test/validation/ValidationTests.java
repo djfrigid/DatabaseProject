@@ -147,12 +147,13 @@ public class ValidationTests {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"35/12/1999"})
-    @DisplayName("returns the date in the correct SQL format if valid")
+    @ValueSource(strings = {"13/10/1999", "10/40/2000",  "01/01/3000"})
+    @DisplayName("returns null if date format invalid")
     public void invalidDateFormatterTest(String input) {
         Date result = DateFormatter.formatDate(input);
         assertNull(result);
     }
+
 
     //Date VALIDATION
     @ParameterizedTest
