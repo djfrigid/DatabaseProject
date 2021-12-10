@@ -1,7 +1,7 @@
 package com.sparta.example.test.dbaccess;
 
-import com.sparta.dbaccess.ConnectionFactory;
-import com.sparta.dbaccess.StatementFactory;
+import com.sparta.model.dbaccess.ConnectionFactory;
+import com.sparta.model.dbaccess.StatementFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
