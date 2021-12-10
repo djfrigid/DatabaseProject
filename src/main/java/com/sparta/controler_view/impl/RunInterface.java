@@ -7,6 +7,7 @@ import com.sparta.controler_view.io.bretty.console.view.MenuView;
 public class RunInterface {
 
     public static void runUserInterfaceCRUD(){
+
         ActionView selectAll = new SelectAll();
         ActionView selectOne = new SelectOne();
         ActionView insertEmployee = new InsertEmployee();
