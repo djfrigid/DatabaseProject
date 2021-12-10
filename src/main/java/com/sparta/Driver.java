@@ -22,8 +22,9 @@ public class Driver {
         LOGGER.info("Number of unique records: " + validAndDuplicateCollections.get(0).size());
         LOGGER.info("Number of duplicate records: " + validAndDuplicateCollections.get(1).size());
         EMPLOYEE_DAO.truncateTable();
+        int poolSize = MultithreadedDBWrites.poolSizeUI();
         long startTime = System.nanoTime();
-        MultithreadedDBWrites.writeNonDuplicatesOnly((Set<Employee>) validAndDuplicateCollections.get(0));
+        MultithreadedDBWrites.writeNonDuplicatesOnly((Set<Employee>) validAndDuplicateCollections.get(0), poolSize);
         long endTime = System.nanoTime();
         PrintTimingData.logTimingData("MT Insert done in: ", startTime, endTime);
         LOGGER.info("Exiting Driver Now");
