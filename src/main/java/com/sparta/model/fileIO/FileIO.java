@@ -24,6 +24,7 @@ public class FileIO {
         BlockingQueue<String> queue = new ArrayBlockingQueue<>(256);
         // Thread Safe Queue to be shared amongst all threads
         Path filename = Path.of("EmployeeRecordsLarge.csv");
+        // Path filename = takeUserInput();
         // Thread pool of fixed size, to be used for parsing Employee lines
         ExecutorService pool = Executors.newFixedThreadPool(poolSize);
         // Create Parser threads and put them in the pool
@@ -84,7 +85,7 @@ public class FileIO {
 
     private static String buildSystemIndependentPath() {
         String accessPath;
-        String regex = "[\\/]";
+        String regex = "[/]";
         String[] apBits = SCANNER.nextLine().trim().split(regex);
         StringBuilder sb = new StringBuilder();
         String fileSep = File.separator;
@@ -162,7 +163,7 @@ class EmployeeParser implements Runnable{
         String email = EmployeeValidate.validateEmail(components[6]);
         java.sql.Date dateOfBirth = DateFormatter.formatDate(components[7]);
         java.sql.Date dateOfJoining = DateFormatter.formatDate(components[8]);
-        return new Employee(id, namePrefix, firstName, initial, lastName, gender, email, null, null, salary);
+        return new Employee(id, namePrefix, firstName, initial, lastName, gender, email, dateOfBirth, dateOfJoining, salary);
     }
 
     @Override

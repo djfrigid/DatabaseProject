@@ -1,7 +1,6 @@
 package com.sparta.model.dbaccess;
 
 import com.sparta.model.employee.Employee;
-import com.sparta.model.util.PrintTimingData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +41,6 @@ class DBWriter implements Runnable{
     public void run() {
         EmployeeDao employeeDao = new EmployeeDaoImpl();
         int masterCount = 0;
-        int batchCount = 0;
         int numberOfBatches = 0;
         int batchSize = 256;
         Employee employee;
@@ -51,10 +49,8 @@ class DBWriter implements Runnable{
             // employeeDao.insertEmployee(employee);
             employeeBatch.add(employee);
             masterCount+=1;
-            batchCount+=1;
             if (employeeBatch.size() == batchSize){
                 employeeDao.insertEmployeeBatch(employeeBatch);
-                batchCount=0;
                 numberOfBatches+=1;
                 employeeBatch.clear();
             }
@@ -65,5 +61,6 @@ class DBWriter implements Runnable{
         if (!employeeBatch.isEmpty()){
             employeeDao.insertEmployeeBatch(employeeBatch);
         }
+        employeeDao.tearDownConnection();
     }
 }

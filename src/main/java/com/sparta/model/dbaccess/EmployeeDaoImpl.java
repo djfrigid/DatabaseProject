@@ -15,16 +15,6 @@ public class EmployeeDaoImpl implements EmployeeDao {
 
     private final Connection connection = ConnectionFactory.getConnectionInstance();
 
-    public long getOwner() {
-        return owner;
-    }
-
-    public void setOwner(long owner) {
-        this.owner = owner;
-    }
-
-    private long owner = 0;
-
     public  EmployeeDaoImpl(){}
 
     @Override
@@ -108,18 +98,9 @@ public class EmployeeDaoImpl implements EmployeeDao {
     @Override
     public void insertEmployee(Employee employee) {
         try {
-            PreparedStatement stmt = MTStatementFactory.getInsertEmployee(connection);
-            stmt.setInt(1, employee.getId());
-            stmt.setString(2,employee.getNamePrefix());
-            stmt.setString(3,employee.getFirstName());
-            stmt.setString(4,String.valueOf(employee.getInitial()));
-            stmt.setString(5,employee.getLastName());
-            stmt.setString(6,String.valueOf(employee.getGender()));
-            stmt.setString(7,employee.getEmail());
-            stmt.setDate(8,employee.getDateOfBirth());
-            stmt.setDate(9,employee.getDateOfJoining());
-            stmt.setInt(10,employee.getSalary());
-            int rowAffected = stmt.executeUpdate();
+            PreparedStatement stmt = StatementFactory.getInsertEmployee(connection);
+            setupEmployeeInsertStatement(employee, stmt);
+            stmt.executeUpdate();
             // LOGGER.info("Records inserted: " + rowAffected);
         } catch (SQLException | IOException e) {
             e.printStackTrace();
@@ -127,21 +108,25 @@ public class EmployeeDaoImpl implements EmployeeDao {
         }
     }
 
+    private void setupEmployeeInsertStatement(Employee employee, PreparedStatement stmt) throws SQLException {
+        stmt.setInt(1, employee.getId());
+        stmt.setString(2,employee.getNamePrefix());
+        stmt.setString(3,employee.getFirstName());
+        stmt.setString(4,String.valueOf(employee.getInitial()));
+        stmt.setString(5,employee.getLastName());
+        stmt.setString(6,String.valueOf(employee.getGender()));
+        stmt.setString(7,employee.getEmail());
+        stmt.setDate(8,employee.getDateOfBirth());
+        stmt.setDate(9,employee.getDateOfJoining());
+        stmt.setInt(10,employee.getSalary());
+    }
+
     @Override
     public void insertEmployeeBatch(List<Employee> Employees){
         try{
-            PreparedStatement stmt = MTStatementFactory.getInsertEmployee(connection);
+            PreparedStatement stmt = StatementFactory.getInsertEmployee(connection);
             for (Employee employee: Employees) {
-                stmt.setInt(1, employee.getId());
-                stmt.setString(2, employee.getNamePrefix());
-                stmt.setString(3, employee.getFirstName());
-                stmt.setString(4, String.valueOf(employee.getInitial()));
-                stmt.setString(5, employee.getLastName());
-                stmt.setString(6, String.valueOf(employee.getGender()));
-                stmt.setString(7, employee.getEmail());
-                stmt.setDate(8, employee.getDateOfBirth());
-                stmt.setDate(9, employee.getDateOfJoining());
-                stmt.setInt(10, employee.getSalary());
+                setupEmployeeInsertStatement(employee, stmt);
                 stmt.addBatch();
                 stmt.clearParameters();
             }
@@ -149,6 +134,16 @@ public class EmployeeDaoImpl implements EmployeeDao {
         } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void tearDownConnection() {
+        try {
+            connection.close();
+        } catch (SQLException e){
+            LOGGER.warn("Connection close failed. Connection  will close on JVM termination.");
+        }
+
     }
 
     @Override
@@ -178,7 +173,7 @@ public class EmployeeDaoImpl implements EmployeeDao {
     public void deleteEmployee(int id) {
         try (PreparedStatement stmt = StatementFactory.getDeleteEmployee()){
             stmt.setInt(1, id);
-            int rowAffected = stmt.executeUpdate();
+            stmt.executeUpdate();
             // LOGGER.info("Records deleted: " + rowAffected);
         } catch (SQLException | IOException throwables) {
             throwables.printStackTrace();

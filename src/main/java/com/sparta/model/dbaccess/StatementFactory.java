@@ -1,6 +1,7 @@
 package com.sparta.model.dbaccess;
 
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
@@ -67,7 +68,7 @@ public class StatementFactory {
         return getOneEmployee;
     }
 
-    public static PreparedStatement getInsertEmployee() throws SQLException, IOException {
+    public static PreparedStatement getInsertEmployee() throws SQLException {
         if(insertEmployee == null){
             insertEmployee = ConnectionFactory.getConnection()
                     .prepareStatement("INSERT INTO employees(id, namePrefix, firstName, initial, " +
@@ -75,6 +76,13 @@ public class StatementFactory {
                             " VALUES(?,?,?,?,?,?,?,?,?,?);");
         }
         return insertEmployee;
+    }
+
+    public static PreparedStatement getInsertEmployee(Connection connection) throws SQLException, IOException {
+        return connection
+                .prepareStatement("INSERT INTO employees(id, namePrefix, firstName, initial, " +
+                        "lastName, gender, email, dateOfBirth, dateOfJoining, salary)" +
+                        " VALUES(?,?,?,?,?,?,?,?,?,?);");
     }
 
     public static PreparedStatement getUpdateAnEmployee() throws SQLException, IOException {
