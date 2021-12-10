@@ -12,6 +12,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.SQLException;
@@ -38,5 +39,16 @@ public class ConnectionTests {
         ConnectionFactory.closeConnection();
         assertTrue(StatementFactory.getAllEmployees().isClosed());
     }
+
+//    @Test
+//    public void statementCloseTest() throws SQLException, IOException {
+//        StatementFactory.getAllEmployees();
+//        StatementFactory.getCreateTable();
+//        StatementFactory.getDeleteEmployee();
+//        StatementFactory.getOneEmployee();
+//        StatementFactory.getDropTable();
+//        StatementFactory.getInsertEmployee();
+//        StatementFactory.closeStatement();
+//    }
 
 }
