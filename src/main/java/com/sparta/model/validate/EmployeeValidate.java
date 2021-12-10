@@ -5,34 +5,26 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.sql.Date;
 
+//CONSTANTS
+import static com.sparta.model.util.Constants.MILLISECONDS_IN_DAY;
+import static com.sparta.model.util.Constants.DAYS_IN_YEAR;
+import static com.sparta.model.util.Constants.EIGHTEEN;
+
+
+import static com.sparta.model.util.Constants.INVALID_STR;
+import static com.sparta.model.util.Constants.INVALID_CHAR;
+import static com.sparta.model.util.Constants.INVALID_NUM;
+
+import static com.sparta.model.util.Constants.NAME_PREFIXES;
+
+import static com.sparta.model.util.Constants.EMAIL_PATTERN;
+import static com.sparta.model.util.Constants.NAME_PATTERN;
+import static com.sparta.model.util.Constants.ID_PATTERN;
+import static com.sparta.model.util.Constants.SALARY_PATTERN;
+import static com.sparta.model.util.Constants.DATE_PATTERN;
+import static com.sparta.model.util.Constants.VALIDATE_DATE_PATTERN;
+
 public class EmployeeValidate {
-    // ----- CONSTANTS -----
-    // Numbers
-    public static final int MILLISECONDSINDAY = 86400000;
-    public static final double DAYSINYEAR = 365.2425;
-    // Invalid returns
-    public static final String INVALIDSTR = "INVALID";
-    public static final char INVALIDCHAR = '\0';
-    public static final String INVALIDNUM = "-1";
-    // Regular Expressions
-    private static final String emailRegex = "^[a-zA-Z0-9_!#$%&’*+=?`{|}~^.-]+@" +
-            "[a-zA-Z0-9]+[.][a-zA-Z0-9]{2,3}(?:[.][a-zA-Z0-9]{2,3})?$";
-    private static final String nameRegex = "^[A-Za-z]{2,}(?:-[A-Za-z]{2,})?$";
-    private static final String idRegex = "^[0-9]{1,6}";
-    private static final String salaryRegex = "[0-9]{4,8}";
-    private static final String dateRegex = "^([0][1-9]|[1][0-2])[\\/]([0-2][0-9]|[3][0-1])[\\/]([1][8-9][0-9]{2}|2[0-9]{3})$";
-    private static final String validDateRegex = "^([0][1-9]|[1][0-2])([0-2][0-9]|[3][0-1])([1][8-9][0-9]{2}|2[0-9]{3})$";
-    // Prefix library
-    private static final  String[] namePrefixes = {"mr.", "mrs.", "miss.", "ms.", "dr.", "drs.", "hon.", "prof."};
-    // Patterns
-    private static final Pattern emailPattern = Pattern.compile(emailRegex);
-    private static final Pattern namePattern = Pattern.compile(nameRegex);
-    private static final Pattern idPattern = Pattern.compile(idRegex);
-    private static final Pattern salaryPattern = Pattern.compile(salaryRegex);
-    private static final Pattern datePattern = Pattern.compile(dateRegex);
-    private static final Pattern validateDatePattern = Pattern.compile(validDateRegex);
-
-
     // Method to check string satisfies regular expression, applied across methods
     private static boolean matches(Pattern pattern, String employeeDetail) {
         Matcher matcher = pattern.matcher(employeeDetail);
@@ -42,10 +34,10 @@ public class EmployeeValidate {
     // Email validation
     public static String validateEmail(String email) {
         // Only valid emails are returned
-        if (matches(emailPattern, email)) {
+        if (matches(EMAIL_PATTERN, email)) {
             return email;
         }
-        return INVALIDSTR;
+        return INVALID_STR;
     }
 
     // Gender validation
@@ -55,7 +47,7 @@ public class EmployeeValidate {
             return Character.toUpperCase(gender);
         }
 
-        return INVALIDCHAR;
+        return INVALID_CHAR;
     }
 
     // Initial validation
@@ -65,13 +57,13 @@ public class EmployeeValidate {
             return Character.toUpperCase(initial);
         }
 
-        return INVALIDCHAR;
+        return INVALID_CHAR;
     }
 
     // Name (first and last) validation
     public static String validateName(String name) {
         // Check name is in correct format
-        if (matches(namePattern, name)) {
+        if (matches(NAME_PATTERN, name)) {
             // Ensure correct capitalisation is returned
             StringBuilder formattedName = new StringBuilder();
             if (name.contains("-")) {
@@ -89,7 +81,7 @@ public class EmployeeValidate {
             }
             return formattedName.toString();
         }
-        return INVALIDSTR;
+        return INVALID_STR;
     }
 
     // Prefix validation
@@ -101,41 +93,41 @@ public class EmployeeValidate {
         }
 
         // Check prefix exists in know values
-        if (Arrays.asList(namePrefixes).contains(prefixFormat.toString())) {
+        if (Arrays.asList(NAME_PREFIXES).contains(prefixFormat.toString())) {
             return prefixFormat.substring(0,1).toUpperCase() + prefixFormat.substring(1);
         }
 
-        return INVALIDSTR;
+        return INVALID_STR;
     }
 
     // ID validation
     public static String validateId(String idNumber) {
         // Check ID matches regex
-        if (matches(idPattern, idNumber)) {
+        if (matches(ID_PATTERN, idNumber)) {
             return idNumber;
         }
-        return INVALIDNUM;
+        return INVALID_NUM;
     }
 
     // Salary validation
     public static String validateSalary(String salary) {
         // Check salary matches regex
-        if (matches(salaryPattern, salary)) {
+        if (matches(SALARY_PATTERN, salary)) {
             return salary;
         }
-        return INVALIDNUM;
+        return INVALID_NUM;
     }
 
     // Date string validation (executed within ./util/DateFormatter)
     public static String validateDateString(String date) {
         // Check datStr matches regex
-        if(matches(datePattern, date)) {
+        if(matches(DATE_PATTERN, date)) {
             return date;
         }
 
         // Format dateStr if valid date, in incorrect format
         String dummy = date.replaceAll("[-:;]", "");
-        if(matches(validateDatePattern, dummy)){
+        if(matches(VALIDATE_DATE_PATTERN, dummy)){
             StringBuilder returnDate = new StringBuilder(dummy);
             returnDate.insert(2, '/');
             returnDate.insert(5, '/');
@@ -150,9 +142,9 @@ public class EmployeeValidate {
     // Validate employee age (18 or over)
     public static Date validateAge(Date dob) {
         Date currentDate = new Date(System.currentTimeMillis());
-        double yearsDiff = (currentDate.getTime()/MILLISECONDSINDAY - dob.getTime()/MILLISECONDSINDAY)/DAYSINYEAR;
+        double yearsDiff = (currentDate.getTime()/MILLISECONDS_IN_DAY - dob.getTime()/MILLISECONDS_IN_DAY)/DAYS_IN_YEAR;
 
-        if (yearsDiff >= 18) {
+        if (yearsDiff >= EIGHTEEN) {
             return dob;
         }
 
