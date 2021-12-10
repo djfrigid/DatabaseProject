@@ -118,7 +118,7 @@ public class EmployeeDaoImpl implements EmployeeDao {
             stmt.setDate(9,employee.getDateOfJoining());
             stmt.setInt(10,employee.getSalary());
             int rowAffected = stmt.executeUpdate();
-            // LOGGER.info("Records inserted: " + rowAffected);
+            LOGGER.info("Records inserted: " + rowAffected);
         } catch (SQLException | IOException e) {
             e.printStackTrace();
             LOGGER.warn("Insert unsuccessful!");

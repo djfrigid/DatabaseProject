@@ -16,16 +16,16 @@ public class UpdateEmployee extends ActionView {
     @Override
     public void executeCustomAction() {
         System.out.println("Params to update: ");
-        int id= prompt("ID: ", Integer.class);
-        String namePrefix = prompt("Name prefix: ", String.class);
-        String firstName = prompt("First name: ", String.class);
-        char initial = prompt("Initial: ", String.class).charAt(0);
-        String lastName = prompt("Last name: ", String.class);
-        char gender = prompt("Gender: ", String.class).charAt(0);
-        String email = prompt("Email: ", String.class);
-        Date dateOfBirth = prompt("Date of birth: ", Date.class);
-        Date dateOfJoining = prompt("Date of joining: ", Date.class);
-        int salary = prompt("Salary: ", Integer.class);
+        int id= prompt("Please enter ID: ", Integer.class);
+        String namePrefix = prompt("Please enter name prefix: ", String.class);
+        String firstName = prompt("Please enter first name: ", String.class);
+        char initial = prompt("Please enter initial: ", String.class).charAt(0);
+        String lastName = prompt("Please enter last name: ", String.class);
+        char gender = prompt("Please enter gender: ", String.class).charAt(0);
+        String email = prompt("Please enter email: ", String.class);
+        Date dateOfBirth = prompt("Please enter date of birth: ", Date.class);
+        Date dateOfJoining = prompt("Please enter date of joining: ", Date.class);
+        int salary = prompt("Please enter salary: ", Integer.class);
 
         Employee employee = new Employee(id,namePrefix,firstName,initial,lastName,gender,email,dateOfBirth,dateOfJoining,salary);
         EMPLOYEE_DAO.updateEmployee(employee);

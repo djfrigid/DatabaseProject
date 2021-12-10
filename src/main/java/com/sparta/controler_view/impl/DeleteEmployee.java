@@ -16,15 +16,7 @@ public class DeleteEmployee extends ActionView {
 
     @Override
     public void executeCustomAction() {
-<<<<<<< HEAD
         int id = prompt("Please enter employee ID: ", Integer.class);
-        //System.out.println("The employee deleted: " );
         EMPLOYEE_DAO.deleteEmployee(id);
-
-
-=======
-        int id = prompt("Please enter employee ID: " , Integer.class);
-        EMPLOYEE_DAO.deleteEmployee(id);
->>>>>>> c7278d5ec49ddc7a6223ff7124515fb59065f112
     }
 }
