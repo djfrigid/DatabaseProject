@@ -22,7 +22,7 @@ public class Driver {
         LOGGER.info("Number of duplicate records: " + validAndDuplicateCollections.get(1).size());
         EMPLOYEE_DAO.truncateTable();
         MultithreadedDBWrites.writeNonDuplicatesOnly((Set<Employee>) validAndDuplicateCollections.get(0));
-
+        LOGGER.info("Exiting Driver Now");
         //Call CRUD interface
         RunInterface.runUserInterfaceCRUD();
     }
