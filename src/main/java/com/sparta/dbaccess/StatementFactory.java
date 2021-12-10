@@ -48,7 +48,7 @@ public class StatementFactory {
     public static PreparedStatement getAllEmployees() throws SQLException {
         if(getAllEmployees == null){
             getAllEmployees = ConnectionFactory.getConnection()
-                    .prepareStatement("SELECT * FROM employees");
+                    .prepareStatement("SELECT * FROM employees;");
         }
         return getAllEmployees;
     }
@@ -56,7 +56,7 @@ public class StatementFactory {
     public static PreparedStatement getOneEmployee() throws SQLException, IOException {
         if(getOneEmployee == null){
             getOneEmployee = ConnectionFactory.getConnection()
-                    .prepareStatement("SELECT * FROM employees WHERE id = ?");
+                    .prepareStatement("SELECT * FROM employees WHERE id = ?;");
         }
         return getOneEmployee;
     }
@@ -76,14 +76,14 @@ public class StatementFactory {
             updateEmployee = ConnectionFactory.getConnection()
                     .prepareStatement("UPDATE employees " +
                             "SET namePrefix = ?, " +
-                            "SET firstName =  ? "+
-                            "SET initial = ? "+
-                            "SET  lastName = ?" +
-                            "SET gender = ? " +
-                            "SET email = ?" +
-                            "SET dateOfBirth = ?" +
-                            "SET dateOfJoining = ?" +
-                            "SET salary = ? " +
+                            "SET firstName =  ?, "+
+                            "SET initial = ?, "+
+                            "SET  lastName = ?," +
+                            "SET gender = ?, " +
+                            "SET email = ?," +
+                            "SET dateOfBirth = ?," +
+                            "SET dateOfJoining = ?," +
+                            "SET salary = ?, " +
                             "WHERE id = ?; ");
         }
         return updateEmployee;
