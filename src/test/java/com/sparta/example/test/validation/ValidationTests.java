@@ -1,7 +1,7 @@
 package com.sparta.example.test.validation;
 
-import com.sparta.util.DateFormatter;
-import com.sparta.validate.EmployeeValidate;
+import com.sparta.model.util.DateFormatter;
+import com.sparta.model.validate.EmployeeValidate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;

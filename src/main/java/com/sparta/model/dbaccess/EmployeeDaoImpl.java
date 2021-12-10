@@ -1,6 +1,6 @@
-package com.sparta.dbaccess;
+package com.sparta.model.dbaccess;
 
-import com.sparta.employee.Employee;
+import com.sparta.model.employee.Employee;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -9,16 +9,23 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import static com.sparta.util.Constants.LOGGER;
+import static com.sparta.model.util.Constants.LOGGER;
 
 public class EmployeeDaoImpl implements EmployeeDao {
 
-    private Connection connection = ConnectionFactory.getConnectionInstance();
+    private final Connection connection = ConnectionFactory.getConnectionInstance();
 
-    public EmployeeDaoImpl(){
-
+    public long getOwner() {
+        return owner;
     }
 
+    public void setOwner(long owner) {
+        this.owner = owner;
+    }
+
+    private long owner = 0;
+
+    public  EmployeeDaoImpl(){}
 
     @Override
     public void dropTable() {
@@ -40,6 +47,16 @@ public class EmployeeDaoImpl implements EmployeeDao {
         }catch(SQLException e){
             e.printStackTrace();
             LOGGER.info("The Table didn't create");
+        }
+    }
+
+    public void truncateTable() {
+        try(PreparedStatement stmt = StatementFactory.getTruncateStatement()){
+            stmt.executeUpdate();
+            LOGGER.info("Table truncated");
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            LOGGER.warn("Truncating unsuccessful! ");
         }
     }
 
