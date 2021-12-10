@@ -19,5 +19,6 @@ public class Driver {
         LOGGER.info("Number of unique records: " + validAndDuplicateCollections.get(0).size());
         LOGGER.info("Number of duplicate records: " + validAndDuplicateCollections.get(1).size());
         MultithreadedDBWrites.writeNonDuplicatesOnly((Set<Employee>) validAndDuplicateCollections.get(0));
+        LOGGER.info("Exiting Driver Now");
     }
 }
