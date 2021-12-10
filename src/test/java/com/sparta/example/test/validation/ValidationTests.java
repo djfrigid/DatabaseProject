@@ -136,41 +136,40 @@ public class ValidationTests {
         assertEquals("-1", result);
     }
 
-    //Date FORMATTER - KONRAD
+    //DATE FORMATTER
+    // D.O.B
     @ParameterizedTest
     @CsvSource({"10/12/1999, 1999-10-12", "05/25/2000, 2000-05-25"})
     @DisplayName("returns the date in the correct SQL format if valid")
-    public void dateFormatterTest(String input, String expectedOutput) {
-        Date result = DateFormatter.formatDate(input);
+    public void dobFormatterTest(String input, String expectedOutput) {
+        Date result = DateFormatter.formatDate(input, true);
         Date expectedDate = java.sql.Date.valueOf((expectedOutput));
         assertTrue(result.compareTo(expectedDate) == 0);
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"13/10/1999", "10/40/2000",  "01/01/3000"})
+    @ValueSource(strings = {"10/10/2015", "10/01/2025",  "01/01/3000"})
     @DisplayName("returns null if date format invalid")
-    public void invalidDateFormatterTest(String input) {
-        Date result = DateFormatter.formatDate(input);
+    public void invalidDobFormatterTest(String input) {
+        Date result = DateFormatter.formatDate(input, true);
         assertNull(result);
     }
 
-
-    //Date VALIDATION
+    //D.O.J
     @ParameterizedTest
-    @ValueSource(strings = {"1995-05-25", "2000-05-25", "1954-04-21", "2003-12-09"})
-    @DisplayName("returns the dob if employee age => 18")
-    public void validAgeTest(String input) {
-        Date dob = java.sql.Date.valueOf((input));
-        Date result = EmployeeValidate.validateAge(dob);
-        assertEquals(dob, result);
+    @CsvSource({"10/12/2015, 2015-10-12", "05/25/2020, 2020-05-25"})
+    @DisplayName("returns the date in the correct SQL format if valid")
+    public void dojFormatterTest(String input, String expectedOutput) {
+        Date result = DateFormatter.formatDate(input, false);
+        Date expectedDate = java.sql.Date.valueOf((expectedOutput));
+        assertTrue(result.compareTo(expectedDate) == 0);
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"2003-12-11"})
-    @DisplayName("returns null if employee age < 18")
-    public void invalidAgeTest(String input) {
-        Date dob = java.sql.Date.valueOf((input));
-        Date result = EmployeeValidate.validateAge(dob);
+    @ValueSource(strings = {"13/10/1999", "10/01/2025",  "01/01/3000"})
+    @DisplayName("returns null if date format invalid")
+    public void invalidDojFormatterTest(String input) {
+        Date result = DateFormatter.formatDate(input, false);
         assertNull(result);
     }
 

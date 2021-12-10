@@ -159,9 +159,9 @@ class EmployeeParser implements Runnable{
         String lastName = EmployeeValidate.validateName(components[4]);
         char gender = EmployeeValidate.validateGender(components[5].charAt(0));
         String email = EmployeeValidate.validateEmail(components[6]);
-        java.sql.Date dateOfBirth = DateFormatter.formatDate(components[7]);
-        java.sql.Date dateOfJoining = DateFormatter.formatDate(components[8]);
-        return new Employee(id, namePrefix, firstName, initial, lastName, gender, email, dateOfBirth, dateOfJoining, salary);
+        java.sql.Date dateOfBirth = DateFormatter.formatDate(components[7], true);
+        java.sql.Date dateOfJoining = DateFormatter.formatDate(components[8], false);
+        return new Employee(id, namePrefix, firstName, initial, lastName, gender, email, null, null, salary);
     }
 
     @Override
