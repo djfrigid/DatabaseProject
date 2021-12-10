@@ -20,7 +20,7 @@ public class EmployeeValidate {
     private static final String nameRegex = "^[A-Za-z]{2,}(?:-[A-Za-z]{2,})?$";
     private static final String idRegex = "^[0-9]{1,6}";
     private static final String salaryRegex = "[0-9]{4,8}";
-    private static final String dateRegex = "^([0][1-9]|[1][0-2])[\\/]([0-2][0-9]|[3][0-1])[\\/]([1][8-9][0-9]{2}|2[0-9]{3})$";
+    private static final String dateRegex = "^([0][1-9]|[1][0-2])[\\/]([0-2][0-9]|[3][0-1])[\\/]([1][8-9][0-9]{2}|[2-3][0-9]{3})$";
     private static final String validDateRegex = "^([0][1-9]|[1][0-2])([0-2][0-9]|[3][0-1])([1][8-9][0-9]{2}|2[0-9]{3})$";
     // Prefix library
     private static final  String[] namePrefixes = {"mr.", "mrs.", "miss.", "ms.", "dr.", "drs.", "hon.", "prof."};
@@ -147,15 +147,32 @@ public class EmployeeValidate {
     }
 
     // TODO - HAVE THIS IMPLEMENTED IN APP
-    // Validate employee age (18 or over)
-    public static Date validateAge(Date dob) {
-        Date currentDate = new Date(System.currentTimeMillis());
-        double yearsDiff = (currentDate.getTime()/MILLISECONDSINDAY - dob.getTime()/MILLISECONDSINDAY)/DAYSINYEAR;
 
-        if (yearsDiff >= 18) {
-            return dob;
+    private static double yearsDiff(Date firstDate, Date secondDate) {
+        double yearsDiff = (secondDate.getTime()/MILLISECONDSINDAY - firstDate.getTime()/MILLISECONDSINDAY)/DAYSINYEAR;
+        return yearsDiff;
+    }
+
+    // Validate employee age (18 or over)
+    public static boolean validAge(Date dob) {
+        Date currentDate = new Date(System.currentTimeMillis());
+        double age = yearsDiff(dob, currentDate);
+
+        if (age >= 18) {
+            return true;
         }
 
-        return null;
+        return false;
+    }
+
+    // Validate DOJ not in the future
+    public static boolean validJoin(Date doj) {
+        Date currentDate = new Date(System.currentTimeMillis());
+        double dojCurrentDiff = yearsDiff(doj, currentDate);
+
+        if (dojCurrentDiff >= 0) {
+            return true;
+        }
+        return false;
     }
 }
