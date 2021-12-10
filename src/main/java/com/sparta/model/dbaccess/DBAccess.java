@@ -1,21 +1,20 @@
-package com.sparta.dbaccess;
+package com.sparta.model.dbaccess;
 
-import com.sparta.employee.Employee;
-import com.sparta.util.PrintTimingData;
+import com.sparta.model.employee.Employee;
+import com.sparta.model.util.PrintTimingData;
 
 import java.util.HashSet;
 import java.util.List;
 
-import static com.sparta.util.Constants.LOGGER;
+import static com.sparta.model.util.Constants.EMPLOYEE_DAO;
+import static com.sparta.model.util.Constants.LOGGER;
 
 public class DBAccess {
-
-    private static final EmployeeDao employeeDao = new EmployeeDaoImpl();
 
     public static void readAll(){
         LOGGER.info("DB read started for all data");
         long startTime = System.nanoTime();
-        List <Employee> listAllEmployees = employeeDao.getAllEmployees();
+        List <Employee> listAllEmployees = EMPLOYEE_DAO.getAllEmployees();
         long endTime = System.nanoTime();
         PrintTimingData.logTimingData("DB read for all records done in: ", startTime, endTime);
     }
@@ -25,7 +24,7 @@ public class DBAccess {
         int count = 0;
         long startTime = System.nanoTime();
         for (Employee employee : toWrite) {
-            employeeDao.insertEmployee(employee);
+            EMPLOYEE_DAO.insertEmployee(employee);
             count++;
             if (count % 100 == 0){
                 LOGGER.info("Records inserted so far: " + count);
@@ -39,14 +38,14 @@ public class DBAccess {
         LOGGER.info("Starting single threaded write for: " + toWrite.size() + " good records");
         long startTime = System.nanoTime();
         for (Employee employee : toWrite) {
-            employeeDao.insertEmployee(employee);
+            EMPLOYEE_DAO.insertEmployee(employee);
         }
         long endTime = System.nanoTime();
         PrintTimingData.logTimingData("DB write for unique entries done in: ", startTime, endTime);
         LOGGER.info("Starting single threaded duplicate writes");
         startTime = System.nanoTime();
         for (Employee employee : duplicatesAndBad){
-            employeeDao.insertEmployee(employee);
+            EMPLOYEE_DAO.insertEmployee(employee);
         }
         endTime = System.nanoTime();
         PrintTimingData.logTimingData("All duplicates written in: ", startTime, endTime);
@@ -55,7 +54,7 @@ public class DBAccess {
     public static void updateRecord(Employee em){
         LOGGER.info("Changing record at id= " + em.getId());
         long startTime = System.nanoTime();
-        employeeDao.updateEmployee(em);
+        EMPLOYEE_DAO.updateEmployee(em);
         long endTime = System.nanoTime();
         PrintTimingData.logTimingData("The update was completed within: ", startTime, endTime);
     }
@@ -64,7 +63,7 @@ public class DBAccess {
     public static void deleteRecord(int id){
         LOGGER.info("Deleting records for id: " + id);
         long startTime = System.nanoTime();
-        employeeDao.deleteEmployee(id);
+        EMPLOYEE_DAO.deleteEmployee(id);
         long endTime = System.nanoTime();
         PrintTimingData.logTimingData("The delete was completed within: ", startTime, endTime);
 

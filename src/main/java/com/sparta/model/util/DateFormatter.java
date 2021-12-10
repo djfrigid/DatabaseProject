@@ -1,10 +1,9 @@
-package com.sparta.util;
+package com.sparta.model.util;
 
-import com.sparta.validate.EmployeeValidate;
+import com.sparta.model.validate.EmployeeValidate;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import static com.sparta.util.Constants.LOGGER;
 
 public class DateFormatter {
 

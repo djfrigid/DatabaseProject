@@ -1,14 +1,14 @@
-package com.sparta.dbaccess;
+package com.sparta.model.dbaccess;
 
-import com.sparta.employee.Employee;
-import com.sparta.util.PrintTimingData;
+import com.sparta.model.employee.Employee;
+import com.sparta.model.util.PrintTimingData;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.*;
 
-import static com.sparta.util.Constants.LOGGER;
+import static com.sparta.model.util.Constants.LOGGER;
 
 public class MultithreadedDBWrites {
     private static final int poolSize = 16;
@@ -72,7 +72,7 @@ class DBWriter implements Runnable{
         while((employee = chunk.poll()) != null){
             count+=1;
             employeeDao.insertEmployee(employee);
-            if (count % 1000 == 0){
+            if (count % 100 == 0){
                 LOGGER.info("Thread " + Thread.currentThread().getId() + " has inserted " + count + " records");
             }
         }

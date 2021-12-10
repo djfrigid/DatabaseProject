@@ -1,17 +1,17 @@
-package com.sparta.fileIO;
+package com.sparta.model.fileIO;
 
-import com.sparta.employee.Employee;
+import com.sparta.model.employee.Employee;
 
-import com.sparta.util.DateFormatter;
-import com.sparta.util.PrintTimingData;
-import com.sparta.validate.EmployeeValidate;
+import com.sparta.model.util.DateFormatter;
+import com.sparta.model.util.PrintTimingData;
+import com.sparta.model.validate.EmployeeValidate;
 
 import java.io.*;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.*;
 
-import static com.sparta.util.Constants.LOGGER;
+import static com.sparta.model.util.Constants.LOGGER;
 
 public class FileIO {
     private static final int poolSize = 8;
@@ -23,7 +23,7 @@ public class FileIO {
     public static List<Collection<Employee>> performMultithreadedRead() {
         BlockingQueue<String> queue = new ArrayBlockingQueue<>(256);
         // Thread Safe Queue to be shared amongst all threads
-        Path filename = Path.of("EmployeeRecords.csv");
+        Path filename = Path.of("EmployeeRecordsLarge.csv");
         // Thread pool of fixed size, to be used for parsing Employee lines
         ExecutorService pool = Executors.newFixedThreadPool(poolSize);
         // Create Parser threads and put them in the pool
