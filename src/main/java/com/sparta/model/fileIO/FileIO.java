@@ -126,7 +126,7 @@ class FileReaderClass implements Runnable{
                 queue.put(nextLine);
                 count++;
             }
-            LOGGER.info("Items added to queue are: " + count);
+            LOGGER.info(count + " records found in file. Parsing in progress.");
         } catch (IOException | InterruptedException e){
             LOGGER.warn("Exception occurred");
         }

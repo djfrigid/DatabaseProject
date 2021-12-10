@@ -60,7 +60,6 @@ class DBWriter implements Runnable{
         Employee employee;
         List<Employee> employeeBatch = new ArrayList<>(batchSize);
         while((employee = chunk.poll()) != null){
-            // employeeDao.insertEmployee(employee);
             employeeBatch.add(employee);
             masterCount+=1;
             if (employeeBatch.size() == batchSize){
