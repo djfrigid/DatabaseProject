@@ -18,5 +18,6 @@ public class SelectAll extends ActionView {
     public void executeCustomAction() {
         List<Employee> employeeList = EMPLOYEE_DAO.getAllEmployees();
         employeeList.forEach(System.out::println);
+        
     }
 }
