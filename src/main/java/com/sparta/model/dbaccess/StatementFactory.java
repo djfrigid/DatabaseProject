@@ -82,14 +82,14 @@ public class StatementFactory {
             updateEmployee = ConnectionFactory.getConnection()
                     .prepareStatement("UPDATE employees " +
                             "SET namePrefix = ?, " +
-                            "SET firstName =  ? "+
-                            "SET initial = ? "+
-                            "SET  lastName = ?" +
-                            "SET gender = ? " +
-                            "SET email = ?" +
-                            "SET dateOfBirth = ?" +
-                            "SET dateOfJoining = ?" +
-                            "SET salary = ? " +
+                            "firstName =  ? ,"+
+                            "initial = ? ,"+
+                            "lastName = ?," +
+                            "gender = ? ," +
+                            "email = ?," +
+                            "dateOfBirth = ?," +
+                            "dateOfJoining = ?," +
+                            "salary = ? " +
                             "WHERE id = ?; ");
         }
         return updateEmployee;

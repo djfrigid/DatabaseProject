@@ -138,14 +138,12 @@ public class EmployeeDaoImpl implements EmployeeDao {
             stmt.setDate(8,employee.getDateOfJoining());
             stmt.setInt(9,employee.getSalary());
             stmt.setInt(10, employee.getId());
-
+            stmt.executeUpdate();
             LOGGER.info("Record Updated successful!");
         }catch (SQLException | IOException e){
             e.printStackTrace();
             LOGGER.warn("Update unsuccessful!");
         }
-
-
     }
 
     @Override
