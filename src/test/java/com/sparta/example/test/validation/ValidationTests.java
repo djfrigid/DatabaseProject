@@ -3,11 +3,13 @@ package com.sparta.example.test.validation;
 import com.sparta.model.util.DateFormatter;
 import com.sparta.model.validate.EmployeeValidate;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.sql.Date;
+import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -152,6 +154,26 @@ public class ValidationTests {
     @DisplayName("returns null if date format invalid")
     public void invalidDobFormatterTest(String input) {
         Date result = DateFormatter.formatDate(input, true);
+        assertNull(result);
+    }
+
+    @DisplayName("Check 18 today is valid DOB")
+    @Test
+    public void eighteenTodayDobFormatterTest(){
+        LocalDate today = LocalDate.now();
+        String inputDob = today.getMonthValue() + "/" + today.getDayOfMonth() + "/" + (today.getYear() - 18);
+        String outputDob = (today.getYear()-18) + "-" + today.getMonthValue() + "-" + today.getDayOfMonth();
+        Date expectedDate = java.sql.Date.valueOf(outputDob);
+        Date result = DateFormatter.formatDate(inputDob.toString(), true);
+        assertTrue(result.compareTo(expectedDate) == 0);
+    }
+
+    @DisplayName("Check 18 tomorrow is invalid DOB")
+    @Test
+    public void eighteenTomorrowDobFormatterTest(){
+        LocalDate today = LocalDate.now();
+        String inputDob = today.getMonthValue() + "/" + (today.getDayOfMonth()+1) + "/" + (today.getYear() - 18);
+        Date result = DateFormatter.formatDate(inputDob.toString(), true);
         assertNull(result);
     }
 

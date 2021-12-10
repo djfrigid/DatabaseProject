@@ -146,8 +146,7 @@ public class EmployeeValidate {
         return null;
     }
 
-    // TODO - HAVE THIS IMPLEMENTED IN APP
-
+    // Return years between two dates
     private static double yearsDiff(Date firstDate, Date secondDate) {
         double yearsDiff = (secondDate.getTime()/MILLISECONDSINDAY - firstDate.getTime()/MILLISECONDSINDAY)/DAYSINYEAR;
         return yearsDiff;
