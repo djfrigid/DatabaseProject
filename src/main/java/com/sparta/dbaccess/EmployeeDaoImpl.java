@@ -13,12 +13,19 @@ import static com.sparta.util.Constants.LOGGER;
 
 public class EmployeeDaoImpl implements EmployeeDao {
 
-    private Connection connection = ConnectionFactory.getConnectionInstance();
+    private final Connection connection = ConnectionFactory.getConnectionInstance();
 
-    public EmployeeDaoImpl(){
-
+    public long getOwner() {
+        return owner;
     }
 
+    public void setOwner(long owner) {
+        this.owner = owner;
+    }
+
+    private long owner = 0;
+
+    public  EmployeeDaoImpl(){}
 
     @Override
     public void dropTable() {
