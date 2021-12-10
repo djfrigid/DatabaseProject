@@ -27,7 +27,7 @@ public class Driver {
         MultithreadedDBWrites.writeNonDuplicatesOnly((Set<Employee>) validAndDuplicateCollections.get(0), poolSize);
         long endTime = System.nanoTime();
         PrintTimingData.logTimingData("MT Insert done in: ", startTime, endTime);
-        LOGGER.info("Exiting Driver Now");
+        LOGGER.info("Initiating CRUD Interface...");
         //Call CRUD interface
         RunInterface.runUserInterfaceCRUD();
     }
