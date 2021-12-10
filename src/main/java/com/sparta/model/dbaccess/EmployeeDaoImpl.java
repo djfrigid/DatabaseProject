@@ -82,21 +82,19 @@ public class EmployeeDaoImpl implements EmployeeDao {
     }
 
     @Override
-    public Employee getEmployee(int id) {
+    public Employee getEmployee(Integer id) {
         Employee employee = new Employee();
         try(PreparedStatement stmt = StatementFactory.getOneEmployee()){
             stmt.setInt(1,id);
             ResultSet result = stmt.executeQuery();
-            employee.setId(result.getInt(id));
-            employee.setNamePrefix(result.getString("namePrefix"));
-            employee.setFirstName(result.getString("firstName"));
-            employee.setInitial(result.getString("initial").charAt(0));
-            employee.setLastName(result.getString("lastName"));
-            employee.setGender(result.getString("gender").charAt(0));
-            employee.setEmail(result.getString("email"));
-            employee.setDateOfBirth(result.getDate("dateOfBirth"));
-            employee.setDateOfJoining(result.getDate("dateOfJoining"));
-            employee.setSalary(result.getInt("salary"));
+            if(result.next()){
+                employee = new Employee(result.getInt("id"),
+                        result.getString("namePrefix"),result.getString("firstName"),
+                        result.getString("initial").charAt(0), result.getString("lastName"),
+                        result.getString("gender").charAt(0), result.getString("email"),
+                        result.getDate("dateOfBirth"), result.getDate("dateOfJoining"),
+                        result.getInt("salary"));
+            }
             LOGGER.info("Employee found!");
         } catch (SQLException | IOException s) {
             s.printStackTrace();
