@@ -20,8 +20,8 @@ public class EmployeeValidate {
     private static final String nameRegex = "^[A-Za-z]{2,}(?:-[A-Za-z]{2,})?$";
     private static final String idRegex = "^[0-9]{1,6}";
     private static final String salaryRegex = "[0-9]{4,8}";
-    private static final String dateRegex = "^([0-1][0-9])[\\/]([0-3][0-9])[\\/]([0-9]{4})";
-    private static final String validDateRegex = "^[0-1][0-9][0-3][0-9][0-9]{4}";
+    private static final String dateRegex = "^([0][1-9]|[1][0-2])[\\/]([0-2][0-9]|[3][0-1])[\\/]([1][8-9][0-9]{2}|2[0-9]{3})$";
+    private static final String validDateRegex = "^([0][1-9]|[1][0-2])([0-2][0-9]|[3][0-1])([1][8-9][0-9]{2}|2[0-9]{3})$";
     // Prefix library
     private static final  String[] namePrefixes = {"mr.", "mrs.", "miss.", "ms.", "dr.", "drs.", "hon.", "prof."};
     // Patterns
