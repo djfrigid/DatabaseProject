@@ -1,4 +1,4 @@
-package com.sparta.dbaccess;
+package com.sparta.model.dbaccess;
 
 import java.io.FileReader;
 import java.io.IOException;
