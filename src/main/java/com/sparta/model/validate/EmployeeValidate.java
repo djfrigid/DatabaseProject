@@ -24,7 +24,6 @@ public class EmployeeValidate {
     private static final String validDateRegex = "^[0-1][0-9][0-3][0-9][0-9]{4}";
     // Prefix library
     private static final  String[] namePrefixes = {"mr.", "mrs.", "miss.", "ms.", "dr.", "drs.", "hon.", "prof."};
-    private static final String[] genders = {"M", "F"};
     // Patterns
     private static final Pattern emailPattern = Pattern.compile(emailRegex);
     private static final Pattern namePattern = Pattern.compile(nameRegex);
@@ -51,8 +50,8 @@ public class EmployeeValidate {
 
     // Gender validation
     public static char validateGender(char gender) {
-        // Check char is expected
-        if (Arrays.asList(genders).contains(Character.toUpperCase(gender))) {
+        if (Character.toUpperCase(gender) == 'M' ||
+        Character.toUpperCase(gender) == 'F') {
             return Character.toUpperCase(gender);
         }
 
