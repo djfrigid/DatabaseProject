@@ -128,6 +128,30 @@ public class EmployeeDaoImpl implements EmployeeDao {
     }
 
     @Override
+    public void insertEmployeeBatch(List<Employee> Employees){
+        try{
+            PreparedStatement stmt = MTStatementFactory.getInsertEmployee(connection);
+            for (Employee employee: Employees) {
+                stmt.setInt(1, employee.getId());
+                stmt.setString(2, employee.getNamePrefix());
+                stmt.setString(3, employee.getFirstName());
+                stmt.setString(4, String.valueOf(employee.getInitial()));
+                stmt.setString(5, employee.getLastName());
+                stmt.setString(6, String.valueOf(employee.getGender()));
+                stmt.setString(7, employee.getEmail());
+                stmt.setDate(8, employee.getDateOfBirth());
+                stmt.setDate(9, employee.getDateOfJoining());
+                stmt.setInt(10, employee.getSalary());
+                stmt.addBatch();
+                stmt.clearParameters();
+            }
+            stmt.executeBatch();
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public void updateEmployee(Employee employee) {
         try (PreparedStatement stmt = StatementFactory.getUpdateAnEmployee()){
             stmt.setString(1, employee.getNamePrefix());
