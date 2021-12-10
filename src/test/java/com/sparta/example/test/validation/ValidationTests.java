@@ -1,4 +1,4 @@
-package com.sparta.example.test;
+package com.sparta.example.test.validation;
 
 import com.sparta.util.DateFormatter;
 import com.sparta.validate.EmployeeValidate;
@@ -11,7 +11,7 @@ import java.sql.Date;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ValidationTest {
+public class ValidationTests {
 
     //Genders
     @ParameterizedTest
