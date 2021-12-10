@@ -151,7 +151,7 @@ public class EmployeeDaoImpl implements EmployeeDao {
         try (PreparedStatement stmt = StatementFactory.getDeleteEmployee()){
             stmt.setInt(1, id);
             int rowAffected = stmt.executeUpdate();
-            // LOGGER.info("Records deleted: " + rowAffected);
+            LOGGER.info("Records deleted: " + rowAffected);
         } catch (SQLException | IOException throwables) {
             throwables.printStackTrace();
             LOGGER.error("Error deleting record!");
