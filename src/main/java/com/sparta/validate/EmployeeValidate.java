@@ -1,64 +1,75 @@
 package com.sparta.validate;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.sql.Date;
 
 public class EmployeeValidate {
-    private static String emailRegex = "^[a-zA-Z0-9_!#$%&’*+=?`{|}~^.-]+@" +
-            "[a-zA-Z0-9]+[.][a-zA-Z0-9]{2,3}(?:[.][a-zA-Z0-9]{2,3})?$";
-    private static String nameRegex = "^[A-Za-z]{2,}(?:-[A-Za-z]{2,})?$";
-    private static String idRegex = "^[0-9]{1,6}";
-    private static String salaryRegex = "[0-9]{4,8}";
-    private static String dateRegex = "^([0][1-9]|[1][0-2])[\\/]([0-2][0-9]|[3][0-1])[\\/]([1][8-9][0-9]{2}|2[0-9]{3})$";
-    private static String validDateRegex = "^([0][1-9]|[1][0-2])([0-2][0-9]|[3][0-1])([1][8-9][0-9]{2}|2[0-9]{3})$";
-    private static Pattern emailPattern = Pattern.compile(emailRegex);
-    private static Pattern namePattern = Pattern.compile(nameRegex);
-    private static Pattern idPattern = Pattern.compile(idRegex);
-    private static Pattern salaryPattern = Pattern.compile(salaryRegex);
-    private static Pattern datePattern = Pattern.compile(dateRegex);
-    private static Pattern validateDatePattern = Pattern.compile(validDateRegex);
-    private static String[] namePrefixes = {"mr.", "mrs.", "miss.", "ms.", "dr.", "drs.", "hon.", "prof."};
+    // ----- CONSTANTS -----
+    // Numbers
     public static final int MILLISECONDSINDAY = 86400000;
     public static final double DAYSINYEAR = 365.2425;
+    // Invalid returns
+    public static final String INVALIDSTR = "INVALID";
+    public static final char INVALIDCHAR = '\0';
+    public static final String INVALIDNUM = "-1";
+    // Regular Expressions
+    private static final String emailRegex = "^[a-zA-Z0-9_!#$%&’*+=?`{|}~^.-]+@" +
+            "[a-zA-Z0-9]+[.][a-zA-Z0-9]{2,3}(?:[.][a-zA-Z0-9]{2,3})?$";
+    private static final String nameRegex = "^[A-Za-z]{2,}(?:-[A-Za-z]{2,})?$";
+    private static final String idRegex = "^[0-9]{6}";
+    private static final String salaryRegex = "[0-9]{4,8}";
+    private static final String dateRegex = "^([0-1][0-9])[\\/]([0-3][0-9])[\\/]([0-9]{4})";
+    private static final String validDateRegex = "^[0-1][0-9][0-3][0-9][0-9]{4}";
+    // Prefix library
+    private static final  String[] namePrefixes = {"mr.", "mrs.", "miss.", "ms.", "dr.", "drs.", "hon.", "prof."};
+    private static final String[] genders = {"M", "F"};
+    // Patterns
+    private static final Pattern emailPattern = Pattern.compile(emailRegex);
+    private static final Pattern namePattern = Pattern.compile(nameRegex);
+    private static final Pattern idPattern = Pattern.compile(idRegex);
+    private static final Pattern salaryPattern = Pattern.compile(salaryRegex);
+    private static final Pattern datePattern = Pattern.compile(dateRegex);
+    private static final Pattern validateDatePattern = Pattern.compile(validDateRegex);
 
-    // Method to check string satisfies regular expression
+
+    // Method to check string satisfies regular expression, applied across methods
     private static boolean matches(Pattern pattern, String employeeDetail) {
         Matcher matcher = pattern.matcher(employeeDetail);
         return matcher.matches();
     }
 
+    // Email validation
     public static String validateEmail(String email) {
         // Only valid emails are returned
         if (matches(emailPattern, email)) {
             return email;
         }
-        return null;
+        return INVALIDSTR;
     }
 
+    // Gender validation
     public static char validateGender(char gender) {
-        // Valid genders are returned
-        if (gender == 'M' || gender == 'F') {
-            return gender;
-        } else if (gender == 'm') {
-            return 'M';
-        } else if (gender == 'f') {
-            return 'F';
+        // Check char is expected
+        if (Arrays.asList(genders).contains(Character.toUpperCase(gender))) {
+            return Character.toUpperCase(gender);
         }
-        return '\0';
+
+        return INVALIDCHAR;
     }
 
+    // Initial validation
     public static char validateInitial(char initial) {
+        // Check initial is alphabetical
         if (Character.isAlphabetic(initial)) {
             return Character.toUpperCase(initial);
         }
 
-        return '\0';
+        return INVALIDCHAR;
     }
 
+    // Name (first and last) validation
     public static String validateName(String name) {
         // Check name is in correct format
         if (matches(namePattern, name)) {
@@ -79,53 +90,65 @@ public class EmployeeValidate {
             }
             return formattedName.toString();
         }
-        return null;
+        return INVALIDSTR;
     }
 
+    // Prefix validation
     public static String validateNamePrefix(String prefix) {
-        String returnPrefix = null;
+        // Check prefix ends with '.'
         StringBuilder prefixFormat = new StringBuilder(prefix.toLowerCase());
         if (prefix.charAt(prefix.length() - 1) != '.') {
             prefixFormat.append(".");
         }
 
+        // Check prefix exists in know values
         if (Arrays.asList(namePrefixes).contains(prefixFormat.toString())) {
-            returnPrefix = prefixFormat.substring(0,1).toUpperCase() + prefixFormat.substring(1);
+            return prefixFormat.substring(0,1).toUpperCase() + prefixFormat.substring(1);
         }
 
-        return returnPrefix;
+        return INVALIDSTR;
     }
 
+    // ID validation
     public static String validateId(String idNumber) {
+        // Check ID matches regex
         if (matches(idPattern, idNumber)) {
             return idNumber;
         }
-        return null;
+        return INVALIDNUM;
     }
 
+    // Salary validation
     public static String validateSalary(String salary) {
+        // Check salary matches regex
         if (matches(salaryPattern, salary)) {
             return salary;
         }
-        return null;
+        return INVALIDNUM;
     }
 
+    // Date string validation (executed within ./util/DateFormatter)
     public static String validateDateString(String date) {
+        // Check datStr matches regex
         if(matches(datePattern, date)) {
             return date;
         }
 
-        String strippedDate = date.replaceAll("[-:;]", "");
-        if(matches(validateDatePattern, strippedDate)){
-            StringBuilder returnDate = new StringBuilder(strippedDate);
+        // Format dateStr if valid date, in incorrect format
+        String dummy = date.replaceAll("[-:;]", "");
+        if(matches(validateDatePattern, dummy)){
+            StringBuilder returnDate = new StringBuilder(dummy);
             returnDate.insert(2, '/');
             returnDate.insert(5, '/');
             return returnDate.toString();
         }
 
+        // Handled by dateFormatter
         return null;
     }
 
+    // TODO - HAVE THIS IMPLEMENTED IN APP
+    // Validate employee age (18 or over)
     public static Date validateAge(Date dob) {
         Date currentDate = new Date(System.currentTimeMillis());
         double yearsDiff = (currentDate.getTime()/MILLISECONDSINDAY - dob.getTime()/MILLISECONDSINDAY)/DAYSINYEAR;
@@ -136,6 +159,4 @@ public class EmployeeValidate {
 
         return null;
     }
-
-
 }
