@@ -4,6 +4,7 @@ import com.sparta.controler_view.impl.RunInterface;
 import com.sparta.model.dbaccess.MultithreadedDBWrites;
 import com.sparta.model.employee.Employee;
 import com.sparta.model.fileIO.FileIO;
+import com.sparta.model.util.PrintTimingData;
 
 import java.io.File;
 import java.util.Collection;
@@ -21,7 +22,10 @@ public class Driver {
         LOGGER.info("Number of unique records: " + validAndDuplicateCollections.get(0).size());
         LOGGER.info("Number of duplicate records: " + validAndDuplicateCollections.get(1).size());
         EMPLOYEE_DAO.truncateTable();
+        long startTime = System.nanoTime();
         MultithreadedDBWrites.writeNonDuplicatesOnly((Set<Employee>) validAndDuplicateCollections.get(0));
+        long endTime = System.nanoTime();
+        PrintTimingData.logTimingData("MT Insert done in: ", startTime, endTime);
         LOGGER.info("Exiting Driver Now");
         //Call CRUD interface
         RunInterface.runUserInterfaceCRUD();

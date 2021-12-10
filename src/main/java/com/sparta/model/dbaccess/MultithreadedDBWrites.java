@@ -11,7 +11,7 @@ import java.util.concurrent.*;
 import static com.sparta.model.util.Constants.LOGGER;
 
 public class MultithreadedDBWrites {
-    private static final int poolSize = 20;
+    private static final int poolSize = 128;
 
     public static void writeNonDuplicatesOnly(Set<Employee> toWrite){
         ExecutorService pool = Executors.newFixedThreadPool(poolSize);
@@ -41,14 +41,29 @@ class DBWriter implements Runnable{
     @Override
     public void run() {
         EmployeeDao employeeDao = new EmployeeDaoImpl();
-        int count = 0;
+        int masterCount = 0;
+        int batchCount = 0;
+        int numberOfBatches = 0;
+        int batchSize = 256;
         Employee employee;
+        List<Employee> employeeBatch = new ArrayList<>(batchSize);
         while((employee = chunk.poll()) != null){
-            count+=1;
-            employeeDao.insertEmployee(employee);
-            if (count % 100 == 0){
-                LOGGER.info("Thread " + Thread.currentThread().getId() + " has inserted " + count + " records");
+            // employeeDao.insertEmployee(employee);
+            employeeBatch.add(employee);
+            masterCount+=1;
+            batchCount+=1;
+            if (employeeBatch.size() == batchSize){
+                employeeDao.insertEmployeeBatch(employeeBatch);
+                batchCount=0;
+                numberOfBatches+=1;
+                employeeBatch.clear();
             }
+            if (masterCount % batchSize == 0){
+                LOGGER.info("Thread " + Thread.currentThread().getId() + " has inserted " + numberOfBatches + " batches (" + masterCount +") records");
+            }
+        }
+        if (!employeeBatch.isEmpty()){
+            employeeDao.insertEmployeeBatch(employeeBatch);
         }
     }
 }
