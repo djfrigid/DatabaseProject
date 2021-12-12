@@ -54,14 +54,14 @@ public class EmployeeValidate {
                 // Format hyphened name
                 String[] names = name.split("-");
                 for (int i = 0; i < names.length; i++) {
-                    formattedName.append(names[i].substring(0,1).toUpperCase() + names[i].substring(1).toLowerCase());
+                    formattedName.append(names[i].substring(0, 1).toUpperCase()).append(names[i].substring(1).toLowerCase());
                     if (i != names.length -1) {
                         formattedName.append("-");
                     }
                 }
             } else {
                 // Format single name
-                formattedName.append(name.substring(0,1).toUpperCase() + name.substring(1).toLowerCase());
+                formattedName.append(name.substring(0, 1).toUpperCase()).append(name.substring(1).toLowerCase());
             }
             return formattedName.toString();
         }
@@ -117,15 +117,14 @@ public class EmployeeValidate {
             returnDate.insert(5, '/');
             return returnDate.toString();
         }
-
+        LOGGER.info("Validation Failed. Failed date: " + date);
         // Handled by dateFormatter
         return null;
     }
 
     // Return years between two dates
     private static double yearsDiff(Date firstDate, Date secondDate) {
-        double yearsDiff = (secondDate.getTime()/MILLISECONDS_IN_DAY - firstDate.getTime()/MILLISECONDS_IN_DAY)/DAYS_IN_YEAR;
-        return yearsDiff;
+        return (secondDate.getTime()/(float)MILLISECONDS_IN_DAY - firstDate.getTime()/(float)MILLISECONDS_IN_DAY)/DAYS_IN_YEAR;
     }
 
     // Validate employee age (18 or over)
@@ -133,11 +132,7 @@ public class EmployeeValidate {
         Date currentDate = new Date(System.currentTimeMillis());
         double age = yearsDiff(dob, currentDate);
 
-        if (age >= EIGHTEEN) {
-            return true;
-        }
-
-        return false;
+        return age >= EIGHTEEN;
     }
 
     // Validate DOJ not in the future
@@ -145,9 +140,6 @@ public class EmployeeValidate {
         Date currentDate = new Date(System.currentTimeMillis());
         double dojCurrentDiff = yearsDiff(doj, currentDate);
 
-        if (dojCurrentDiff >= 0) {
-            return true;
-        }
-        return false;
+        return dojCurrentDiff >= 0;
     }
 }

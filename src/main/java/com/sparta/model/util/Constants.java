@@ -27,8 +27,8 @@ public class Constants {
     public static final String NAME_REGEX = "^[A-Za-z]{2,}(?:-[A-Za-z]{2,})?$";
     public static final String ID_REGEX = "^[0-9]{1,6}";
     public static final String SALARY_REGEX = "[0-9]{4,8}";
-    public static final String DATE_REGEX = "^([0][1-9]|[1][0-2])[\\/]([0-2][0-9]|[3][0-1])[\\/]([1][8-9][0-9]{2}|[2-3][0-9]{3})$";
-    public static final String VALID_DATE_REGEX = "^([0][1-9]|[1][0-2])([0-2][0-9]|[3][0-1])([1][8-9][0-9]{2}|2[0-9]{3})$";
+    public static final String DATE_REGEX = "(0?[1-9]|1[0-2])/((0?|[1-2])[0-9]|3[0-1])/(1[8-9][0-9]{2}|[2-3][0-9]{3})";
+    public static final String VALID_DATE_REGEX = "(0?[1-9]|1[0-2])((0?|[1-2])[0-9]|3[0-1])(1[8-9][0-9]{2}|2[0-9]{3})";
     // Prefix library
     public static final  String[] NAME_PREFIXES = {"mr.", "mrs.", "miss.", "ms.", "dr.", "drs.", "hon.", "prof."};
     // Patterns

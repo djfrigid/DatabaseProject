@@ -1,9 +1,7 @@
 package com.sparta;
 
 import com.sparta.controler_view.impl.RunInterface;
-import com.sparta.model.dbaccess.ConnectionFactory;
 import com.sparta.model.dbaccess.MultithreadedDBWrites;
-import com.sparta.model.dbaccess.StatementFactory;
 import com.sparta.model.employee.Employee;
 import com.sparta.model.fileIO.FileIO;
 import com.sparta.model.util.DBInit;

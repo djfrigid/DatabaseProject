@@ -6,16 +6,22 @@ import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
+import static com.sparta.model.util.Constants.LOGGER;
+
 public class DateFormatter {
 
     private static final SimpleDateFormat inSDF = new SimpleDateFormat("MM/dd/yyyy");
     private static final SimpleDateFormat outSDF = new SimpleDateFormat("yyyy-MM-dd");
+
     public static java.sql.Date formatDate(String inDate, boolean dob) {
 
         // Evaluate input date format
         inDate = EmployeeValidate.validateDateString(inDate);
+        if(inDate == null){
+            LOGGER.fatal("Well...");
+        }
 
-        java.util.Date date = null;
+        java.util.Date date;
         String outDate = "";
         if (inDate != null) {
             try {
@@ -23,7 +29,7 @@ public class DateFormatter {
                 date = inSDF.parse(inDate);
                 outDate = outSDF.format(date);
             } catch (ParseException ex){
-                return null;
+                LOGGER.warn("Date parsing failed");
             }
         }
 

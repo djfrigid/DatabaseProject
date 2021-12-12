@@ -24,8 +24,7 @@ public class FileIO {
     public static List<Collection<Employee>> performMultithreadedRead() {
         BlockingQueue<String> queue = new LinkedBlockingQueue<>();
         // Thread Safe Queue to be shared amongst all threads
-        // Path filename = Path.of("EmployeeRecordsLarge.csv");
-        Path filename = takeUserInput();
+        Path filename = Path.of("EmployeeRecords.csv");
         // Path filename = takeUserInput();
         // Thread pool of fixed size, to be used for parsing Employee lines
         ExecutorService pool = Executors.newFixedThreadPool(poolSize);
