@@ -1,6 +1,8 @@
 package com.sparta.model.validate;
 
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.sql.Date;
@@ -124,14 +126,13 @@ public class EmployeeValidate {
 
     // Return years between two dates
     private static double yearsDiff(Date firstDate, Date secondDate) {
-        return (secondDate.getTime()/(float)MILLISECONDS_IN_DAY - firstDate.getTime()/(float)MILLISECONDS_IN_DAY)/DAYS_IN_YEAR;
+        return ((float) (secondDate.getTime()/MILLISECONDS_IN_DAY - firstDate.getTime()/MILLISECONDS_IN_DAY))/DAYS_IN_YEAR;
     }
 
     // Validate employee age (18 or over)
     public static boolean validAge(Date dob) {
         Date currentDate = new Date(System.currentTimeMillis());
         double age = yearsDiff(dob, currentDate);
-
         return age >= EIGHTEEN;
     }
 

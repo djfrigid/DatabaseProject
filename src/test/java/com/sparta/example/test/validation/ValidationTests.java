@@ -162,9 +162,9 @@ public class ValidationTests {
     public void eighteenTodayDobFormatterTest(){
         LocalDate today = LocalDate.now();
         String inputDob = today.getMonthValue() + "/" + today.getDayOfMonth() + "/" + (today.getYear() - 18);
-        String outputDob = (today.getYear()-18) + "-" + today.getMonthValue() + "-" + today.getDayOfMonth();
+        String outputDob = (today.getYear() - 18) + "-" + today.getMonthValue() + "-" + today.getDayOfMonth();
         Date expectedDate = java.sql.Date.valueOf(outputDob);
-        Date result = DateFormatter.formatDate(inputDob.toString(), true);
+        Date result = DateFormatter.formatDate(inputDob, true);
         assertTrue(result.compareTo(expectedDate) == 0);
     }
 
@@ -172,8 +172,8 @@ public class ValidationTests {
     @Test
     public void eighteenTomorrowDobFormatterTest(){
         LocalDate today = LocalDate.now();
-        String inputDob = today.getMonthValue() + "/" + (today.getDayOfMonth()+1) + "/" + (today.getYear() - 18);
-        Date result = DateFormatter.formatDate(inputDob.toString(), true);
+        String inputDob = today.getMonthValue() + "/" + (today.getDayOfMonth() + 1) + "/" + (today.getYear() - 18);
+        Date result = DateFormatter.formatDate(inputDob, true);
         assertNull(result);
     }
 
