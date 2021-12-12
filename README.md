@@ -16,7 +16,7 @@
       <li><a href="#phase-two">Phase Two</a></li>
       <li><a href="#phase-three">Phase Three</a></li>
       <li><a href="#user-interface">User Interface</a></li>
-      <li><a href="#practces">Practices</a></li>
+      <li><a href="#practices">Practices</a></li>
   </ol>
 </details>
 
@@ -41,6 +41,8 @@ Make sure that you have JDK installed on your machine in order to compile the co
    dbUser=[USER NAME]
    dbPassword=[PASSWORD]
    ```
+   
+   Please note that the scripts included with the system will run automatically whenever the system is run. The scripts will create a database named "databaseproject" and the      necessary table inside of it, so for easier use, please specify "databaseproject" on the end of your connection URL in the connection.properties file.
 
 3. Open command prompt (Windows) or terminal (Mac/Linux) and navigate to cloned repository. 
 
