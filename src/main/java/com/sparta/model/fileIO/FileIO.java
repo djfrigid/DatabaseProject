@@ -7,6 +7,7 @@ import com.sparta.model.util.PrintTimingData;
 import com.sparta.model.validate.EmployeeValidate;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.*;
@@ -63,22 +64,30 @@ public class FileIO {
             } else System.out.println("Choice was not one of N, RP or AP");
         }
         String accessPath = null;
-        switch (choice){
-            case "N" -> {
-                System.out.println("Please enter the name of the file that you would like to use.");
-                System.out.println("This file should be at the root level of the project");
-                accessPath = SCANNER.nextLine().trim();
+        boolean validPath = false;
+        while (!validPath) {
+            switch (choice) {
+                case "N" -> {
+                    System.out.println("Please enter the name of the file that you would like to use.");
+                    System.out.println("This file should be at the root level of the project");
+                    accessPath = SCANNER.nextLine().trim();
+                }
+                case "RP" -> {
+                    System.out.println("Enter the relative path of the file you would like to use");
+                    System.out.println("This path is relative to the root level of the project");
+                    accessPath = buildSystemIndependentPath();
+                }
+                case "AP" -> {
+                    System.out.println("Enter the absolute path of the file you would like to use");
+                    accessPath = buildSystemIndependentPath();
+                }
             }
-            case "RP" -> {
-                System.out.println("Enter the relative path of the file you would like to use");
-                System.out.println("This path is relative to the root level of the project");
-                accessPath = buildSystemIndependentPath();
+            if (Files.exists(Path.of(accessPath))){
+                validPath=true;
             }
-            case "AP" -> {
-                System.out.println("Enter the absolute path of the file you would like to use");
-                accessPath = buildSystemIndependentPath();
-            }
+            else System.out.println("Invalid path specified. Please try again");
         }
+
         return Path.of(accessPath);
     }
 
