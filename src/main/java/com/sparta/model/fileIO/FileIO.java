@@ -21,9 +21,10 @@ public class FileIO {
     private static final Scanner SCANNER = new Scanner(System.in);
 
     public static List<Collection<Employee>> performMultithreadedRead() {
-        BlockingQueue<String> queue = new ArrayBlockingQueue<>(256);
+        BlockingQueue<String> queue = new LinkedBlockingQueue<>();
         // Thread Safe Queue to be shared amongst all threads
-        Path filename = Path.of("EmployeeRecordsLarge.csv");
+        // Path filename = Path.of("EmployeeRecordsLarge.csv");
+        Path filename = takeUserInput();
         // Path filename = takeUserInput();
         // Thread pool of fixed size, to be used for parsing Employee lines
         ExecutorService pool = Executors.newFixedThreadPool(poolSize);
