@@ -12,7 +12,7 @@ public class Constants {
     public static final EmployeeDao EMPLOYEE_DAO = new EmployeeDaoImpl();
     // ----- CONSTANTS -----
     // Numbers
-    public static final int MILLISECONDS_IN_DAY = 86400000;
+    public static final long MILLISECONDS_IN_DAY = 86400000;
     public static final double DAYS_IN_YEAR = 365.2425;
     public static final int EIGHTEEN = 18;
     public static final char M = 'M';
